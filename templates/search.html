@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>柒猫科技-搜索结果</title>
+    <meta name="keywords" content="柒猫科技，智慧生活助手"/>
+    <meta name="description" content="柒猫科技，智慧生活助手"/>
+</head>
+<body>
+
+</body>
+<script>
+    let dtkCount = 0, tvCount = 0;
+    let smartRet = JSON.parse('{{smart_ret|tojson}}');
+    if(smartRet && smartRet.length>0){
+        for(let i=0;i<smartRet.length;i++){
+            // 遍历判断是否只有dtk结果
+            if(smartRet[i]['wx_msg_type'] === '0'){
+                dtkCount += 1;
+            }else{
+                tvCount += 1;
+            }
+        }
+        if(dtkCount===0 || (tvCount===0 && smartRet[0]['wx_msg_ret'] && smartRet[0]['wx_msg_ret'] !=='None')){
+            // 只有dtk结果就直接跳转到优惠券页面
+            window.location.href = smartRet[0]['wx_msg_ret'];
+        }else{
+            // 绘制搜索结果页面
+            renderHtml(smartRet);
+        }
+    }else{
+        // 刷新页面
+        let toId = setTimeout(refresh, 1000);
+        sessionStorage.setItem('timeoutId', toId+"");
+    }
+
+    // 绘制页面
+    function renderHtml(smartRet) {
+        console.log(smartRet);
+        console.log(decodeURI(decodeURI(smartRet[0]['wx_msg_ret'])));
+    }
+
+    // 绘制没有结果页面
+    function renderNoRetHtml() {
+        console.log("很抱歉，没有搜索结果！");
+    }
+
+    // 页面刷新
+    function refresh(){
+        // 获取sessionStorage中的重载次数
+        let curTime = parseInt(sessionStorage.getItem('curTime'));
+        curTime = curTime?curTime:0; // 不存在就设为0
+        if(curTime===2 || smartRet.length>0){
+            // 关闭timeout
+            clearTimeout(Number(sessionStorage.getItem('timeoutId')));
+            // 清空sessionStorage
+            sessionStorage.removeItem("curTime");
+            sessionStorage.removeItem("timeoutId");
+            // 绘制没有结果页面
+            renderNoRetHtml();
+        }else{
+            curTime += 1; // 重载次数，最大两次，极限时间就是2秒内出搜索结果
+            sessionStorage.setItem('curTime', curTime+"");
+            window.location.reload(); // 页面重载
+        }
+    }
+</script>
+</html>
