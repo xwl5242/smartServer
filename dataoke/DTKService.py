@@ -22,6 +22,12 @@ class DTKService:
 
     @staticmethod
     def tao_passwd_create(text, url):
+        """
+        生成淘口令
+        :param text:
+        :param url:
+        :return:
+        """
         passwd_json = DTKService._send('TB_PASSWD_CREATE', {'text': text, 'url': url})
         if passwd_json and passwd_json['code'] == 0:
             # {'password_simple': '￥fkCpcJlsI6W￥', 'model': '10￥fkCpcJlsI6W￥/', 'longTpwd': '108.0￥fkCpcJlsI6W￥...'}
@@ -30,7 +36,26 @@ class DTKService:
             return None, passwd_json['msg']
 
     @staticmethod
+    def tao_twd_to_twd(content):
+        """
+        淘口令转淘口令（转为自己的淘口令）
+        :param content:
+        :return:
+        """
+        passwd_json = DTKService._send('TB_TWD_TO_TWD', {'content': content})
+        if passwd_json and passwd_json['code'] == 0:
+            # {'password_simple': '￥fkCpcJlsI6W￥', 'model': '10￥fkCpcJlsI6W￥/', 'longTpwd': '108.0￥fkCpcJlsI6W￥...'}
+            return "0000", passwd_json['data']
+        else:
+            return None, passwd_json['msg']
+
+    @staticmethod
     def goods_detail(goods_id):
+        """
+        商品详情查询
+        :param goods_id:
+        :return:
+        """
         good_json = DTKService._send('GOODS_DETAIL', {'goodsId': goods_id})
         if good_json and good_json['code'] == 0:
             # {'id': -1, 'goodsId': '633240667694', 'title': '璞诱旗舰店...', 'dtitle': '璞诱旗..', 'originalPrice': 89.9,
@@ -67,6 +92,12 @@ class DTKService:
 
     @staticmethod
     def _send(api_key, args):
+        """
+        DTK API 请求
+        :param api_key:
+        :param args:
+        :return:
+        """
         url, method, version = DTKService._get_dtk_api(api_key)
         if url and method and version:
             params = {'version': version}
@@ -77,6 +108,12 @@ class DTKService:
     @staticmethod
     @db
     def _get_dtk_api(cursor, api_key):
+        """
+        根据API_KEY查询DTK API
+        :param cursor:
+        :param api_key:
+        :return:
+        """
         sql = f"select * from dtk_api where api_key='{api_key}' and del_flag='0'"
         cursor.execute(sql)
         api = cursor.fetchone()
