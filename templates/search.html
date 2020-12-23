@@ -8,7 +8,7 @@
     <meta name="description" content="柒猫科技，智慧生活助手"/>
 </head>
 <body>
-
+    <iframe id="myIFrame" src=""></iframe>
 </body>
 <script>
     let dtkCount = 0, tvCount = 0;
@@ -24,7 +24,8 @@
         }
         if(dtkCount===0 || (tvCount===0 && smartRet[0]['wx_msg_ret'] && smartRet[0]['wx_msg_ret'] !=='None')){
             // 只有dtk结果就直接跳转到优惠券页面
-            window.location.href = smartRet[0]['wx_msg_ret'];
+            {#window.location.href = smartRet[0]['wx_msg_ret'];#}
+            document.getElementById("myIFrame").src = smartRet[0]['wx_msg_ret'];
         }else{
             // 绘制搜索结果页面
             renderHtml(smartRet);
