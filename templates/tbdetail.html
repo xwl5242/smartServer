@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" style="font-size: 40px;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>{{ detail.dtitle }}</title>
+    <meta name="keywords" content="柒猫科技，智慧生活助手"/>
+    <meta name="description" content="柒猫科技，智慧生活助手"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='swiper/swiper-bundle.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/wx-main.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/wx-index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/wx-detail.min.css') }}">
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/clipboard.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='swiper/swiper-bundle.min.js') }}"></script>
+</head>
+<body>
+<div class="new-footer">
+    <div class="new-buy" data-clipboard-text="{{ pwd }}">
+        前往购买
+    </div>
+</div>
+<div class="bg"></div>
+<div class="tkl_window" style="color: rgb(0, 0, 0); display: none;">
+    <div class="tkl_window_index">
+        <img id="tkl_close" src="http://g.kbscdn.cn/taoke/Public/css/img/x2.png" style="width: 15px;float: right;">
+        <div class="tkl_window_index_div1">
+            <img src="http://g.kbscdn.cn/taoke/Public/images/tklfzcg.png">
+        </div>
+    </div>
+</div>
+<div class="app-detail" data-reactid=".0">
+    <div class="pic_gallery homePage" data-reactid=".0.0:">
+        {% set swiperList = detail.detailPics|default(detail.imgs) %}
+        <div class="swiper-container">
+            <div class="swiper-wrapper">
+                {% set imgList = detail.imgs.split(',') %}
+                {% for img in imgList %}
+                    <div class="swiper-slide">
+                        <img src="{{ img }}">
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="main_layout" data-reactid=".0.0:2">
+        <div class="title_share">
+            <h1>
+                <span>{{ detail.dtitle }}</span>
+            </h1>
+        </div>
+        <div class="d-price">
+            <div style="position:relative;min-height: 70px;">
+                <div class="present-price">
+                    <label class="price-name">
+                    </label>
+                    <p class="o-t-price">
+                        <span class="major">{{ detail.actualPrice }}</span>
+                    </p>
+                    <p class="txt" style="display: none;">
+                        <span></span>
+                    </p>
+                </div>
+                <div class="original-price" style="margin-bottom: 15px;">
+                    <div class="">
+                        <span>价格</span> <span>:￥</span>
+                        <del>{{ detail.originalPrice }}</del>
+                    </div>
+                </div>
+                {#                <div class="new-footer"#}
+                {#                     style="position:absolute; z-index:1; right:10px; top:10px; left:auto; display:block; padding:0; margin:0; border:none; width:auto; height:auto;">#}
+                {#                    <div class="new-share" onclick="$.tipsShare();" style="border:none;">分享</div>#}
+                {#                </div>#}
+            </div>
+        </div>
+        <div style="border-top: .32rem solid #eee;padding: .32rem .32rem;" class="shop_header">
+            <div class="img">
+                <img src="//img.alicdn.com/imgextra//60/2a/TB1pUDTj5pE_u4jSZKbSuvCUVXa.jpg">
+            </div>
+            <div class="info">
+                <div>
+                    <h3>{{ detail.shopName }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="d-InfoMain">
+        <div class="d-tabBox">
+            <div id="descimg" class="itemPhotoDetail ">
+                <div class="detail-desc">
+                    {% set imgList = detail.imgs.split(',') %}
+                    {% for img in imgList %}
+                        <div class="desc_page_box normal">
+                            <img class="" src="{{ img }}">
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        new Swiper('.swiper-container');
+        $(".new-buy").click(function(){
+            new Clipboard(".new-buy");
+            $(".bg").show();
+            $(".tkl_window").show();
+        });
+        $("#tkl_close").click(function(){
+            $(".bg").hide();
+            $(".tkl_window").hide();
+        });
+    });
+</script>
+</body>
+</html>

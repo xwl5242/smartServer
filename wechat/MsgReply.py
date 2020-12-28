@@ -25,10 +25,14 @@ class MsgReply:
                 tv = f"http://xwlzhx20151118.quanchonger.com/index.php/" \
                     f"vod/search.html?wd={requests.utils.quote(wx_key_word)}"
                 WxService.save_smart_search(wx_id, wx_key_word, '0', save_time, wx_msg_id, tv)
-        ret, short_url = DTKService.universal_parse(wx_key_word)
-        if ret is not None and short_url:
-            short_url = short_url if ret == "0000" else None
-            WxService.save_smart_search(wx_id, wx_key_word, '1', save_time, wx_msg_id, short_url)
+        ret, good_info = DTKService.universal_parse(wx_key_word)
+        if ret is not None and good_info:
+            good_info = good_info if ret == "0000" else None
+            good_id = good_info['goodsId']
+            if good_id:
+                ret0, short_url = DTKService.privilege_link(good_id)
+                if ret0 == "0000" and short_url:
+                    WxService.save_smart_search(wx_id, wx_key_word, '1', save_time, wx_msg_id, good_id+"@"+short_url)
 
     @staticmethod
     def reply(post_xml_msg, s_msg_signature, s_time_stamp, s_nonce, is_crypt=False):

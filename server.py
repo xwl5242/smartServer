@@ -2,10 +2,30 @@
 import json
 from wechat.MsgReply import MsgReply
 from wechat.WxService import WxService
+from dataoke.DTKService import DTKService
 from flask import Flask, request, render_template, jsonify
 
 
 app = Flask(__name__)
+
+
+@app.route("/wx/taobao.html", methods=['GET'])
+def wx_taobao():
+    wx_msg_ret = request.args['wx_msg_ret']
+    if wx_msg_ret:
+        rets = str(wx_msg_ret).split("@")
+        ret, goods_detail = DTKService.goods_detail(rets[0])
+    return render_template('taobao.html', shortUrl=rets[1], goods_detail=goods_detail)
+
+
+@app.route("/wx/taobao/detail.html", methods=['GET'])
+def wx_taobao_detail():
+    goods_id = request.args['goodsId']
+    ret, goods_detail = DTKService.goods_detail(goods_id)
+    if ret == "0000" and goods_detail:
+        ret0, pwd = DTKService.tao_passwd_create(goods_detail['dtitle'], goods_detail['couponLink'])
+        return render_template('tbdetail.html', detail=goods_detail, pwd=pwd['password_simple'])
+    return render_template('404.html')
 
 
 @app.route("/wx/search/ret", methods=['GET'])
@@ -37,7 +57,14 @@ def wx_msg():
         traceback.print_exc()
 
 
+def substr(string, start, end):
+    start = start if start else 0
+    end = end if (end or int(end) != 0) else len(string)
+    return str(string)[start: end]
+
+
 if __name__ == '__main__':
+    app.add_template_filter(substr, "substr")
     app.run(host="0.0.0.0", port=8082, debug=True)
 
 
