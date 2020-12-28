@@ -15,6 +15,13 @@ class MsgReply:
 
     @staticmethod
     def go_search(wx_id, wx_key_word, wx_msg_id):
+        """
+        关键字搜索功能
+        :param wx_id: 消息发送者
+        :param wx_key_word: 关键字信息
+        :param wx_msg_id: 消息唯一id
+        :return:
+        """
         import time, json
         save_time = time.time()
         tv = requests.get('https://api.quandidi.top/vip/search/'+wx_key_word)
@@ -25,13 +32,12 @@ class MsgReply:
                 tv = f"http://xwlzhx20151118.quanchonger.com/index.php/" \
                     f"vod/search.html?wd={requests.utils.quote(wx_key_word)}"
                 WxService.save_smart_search(wx_id, wx_key_word, '0', save_time, wx_msg_id, tv)
-        ret, good_info = DTKService.universal_parse(wx_key_word)
-        if ret is not None and good_info:
-            good_info = good_info if ret == "0000" else None
+        good_info = DTKService.universal_parse(wx_key_word)
+        if good_info:
             good_id = good_info['goodsId']
             if good_id:
-                ret0, short_url = DTKService.privilege_link(good_id)
-                if ret0 == "0000" and short_url:
+                short_url = DTKService.privilege_link(good_id)
+                if short_url:
                     WxService.save_smart_search(wx_id, wx_key_word, '1', save_time, wx_msg_id, good_id+"@"+short_url)
 
     @staticmethod
@@ -74,8 +80,11 @@ class MsgReply:
                 reply.target = msg.source
                 if 'subscribe' == msg.event:
                     # 用户关注
-                    reply.content = """终于等到你，欢迎关注!
-这里是你的智慧生活助手，在这里你将会体会到丰富有趣的科技交互！
+                    reply.content = """终于等到你，欢迎您的关注!
+这里是您的智慧生活助手，在这里你将会体会到丰富有趣的科技交互！
+1. 公众号回复任意影视剧集名称关键字，即可快速搜索影视内容
+2. 公众号回复任意单个且完整的淘口令，即可快速搜索优惠内容
+3. 公众号会不间断更新其他丰富有趣的科技生活助手，敬请期待
                     """
         else:
             pass

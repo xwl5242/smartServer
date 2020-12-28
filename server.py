@@ -18,25 +18,38 @@ app.add_template_filter(substr, "substr")
 
 @app.route("/wx/taobao.html", methods=['GET'])
 def wx_taobao():
+    """
+    优惠券搜索结果页面
+    :return:
+    """
     wx_msg_ret = request.args['wx_msg_ret']
     if wx_msg_ret:
-        rets = str(wx_msg_ret).split("@")
-        ret, goods_detail = DTKService.goods_detail(rets[0])
-    return render_template('taobao.html', shortUrl=rets[1], goods_detail=goods_detail)
+        ret_list = str(wx_msg_ret).split("@")
+        goods_detail = DTKService.goods_detail(ret_list[0])
+        return render_template('taobao.html', shortUrl=ret_list[1], goods_detail=goods_detail)
+    return render_template('404.html')
 
 
 @app.route("/wx/taobao/detail.html", methods=['GET'])
 def wx_taobao_detail():
+    """
+    优惠券详情页面
+    :return:
+    """
     goods_id = request.args['goodsId']
-    ret, goods_detail = DTKService.goods_detail(goods_id)
-    if ret == "0000" and goods_detail:
-        ret0, pwd = DTKService.tao_passwd_create(goods_detail['dtitle'], goods_detail['couponLink'])
+    goods_detail = DTKService.goods_detail(goods_id)
+    if goods_detail:
+        pwd = DTKService.tao_passwd_create(goods_detail['dtitle'], goods_detail['couponLink'])
         return render_template('tbdetail.html', detail=goods_detail, pwd=pwd['password_simple'])
     return render_template('404.html')
 
 
 @app.route("/wx/search/ret", methods=['GET'])
 def wx_search_ret():
+    """
+    微信搜索结果页面
+    :return:
+    """
     wx_id = request.args['wx_id']
     msg_id = request.args['msg_id']
     smart_ret = WxService.query_smart_search(wx_id, msg_id)
@@ -66,6 +79,10 @@ def wx_msg():
 
 @app.route("/wx_create_menu.html", methods=['GET', 'POST'])
 def wx_create_menu():
+    """
+    微信创建自定义菜单
+    :return:
+    """
     ret = WxMenuService().create({
         "button": [
             {
