@@ -20,6 +20,15 @@ class WxMediaService(WeChatMedia):
         super(WxMediaService, self).__init__(client)
 
 
+class WxMenuService:
+    def __init__(self):
+        self.client = WeChatClient(Conf.WX_APP_ID, Conf.WX_APP_SECRET,
+                                   access_token=WxService.fetch_token(ACCESS_TOKEN_TYPE))
+
+    def create(self, menu):
+        return self.client.menu.create(menu)
+
+
 class WxService:
 
     @staticmethod

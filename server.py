@@ -1,12 +1,19 @@
 # -*- coding:utf-8 -*-
 import json
 from wechat.MsgReply import MsgReply
-from wechat.WxService import WxService
 from dataoke.DTKService import DTKService
+from wechat.WxService import WxService, WxMenuService
 from flask import Flask, request, render_template, jsonify
 
 
+def substr(string, start, end):
+    start = start if start else 0
+    end = end if (end or int(end) != 0) else len(string)
+    return str(string)[start: end]
+
+
 app = Flask(__name__)
+app.add_template_filter(substr, "substr")
 
 
 @app.route("/wx/taobao.html", methods=['GET'])
@@ -57,14 +64,28 @@ def wx_msg():
         traceback.print_exc()
 
 
-def substr(string, start, end):
-    start = start if start else 0
-    end = end if (end or int(end) != 0) else len(string)
-    return str(string)[start: end]
+@app.route("/wx_create_menu.html", methods=['GET', 'POST'])
+def wx_create_menu():
+    ret = WxMenuService().create({
+        "button": [
+            {
+                "type": "view",
+                "name": "优惠商城",
+                "url": "https://www.quanchonger.com"
+            },
+            {
+                "type": "miniprogram",
+                "name": "小汪影视",
+                "url": "http://mp.weixin.qq.com",
+                "appid": "wx1f5d6afca3c44aab",
+                "pagepath": "pages/index/index"
+            }
+        ]
+    })
+    return jsonify(json.loads(ret))
 
 
 if __name__ == '__main__':
-    app.add_template_filter(substr, "substr")
     app.run(host="0.0.0.0", port=8082, debug=True)
 
 

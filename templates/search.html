@@ -15,15 +15,17 @@
     if(smartRet && smartRet.length>0){
         for(let i=0;i<smartRet.length;i++){
             // 遍历判断是否只有dtk结果
-            if(smartRet[i]['wx_msg_type'] === '0'){
+            if(smartRet[i]['wx_msg_type'] === '1'){
                 dtkCount += 1;
             }else{
                 tvCount += 1;
             }
         }
-        if(dtkCount===0 || (tvCount===0 && smartRet[0]['wx_msg_ret'] && smartRet[0]['wx_msg_ret'] !=='None')){
+        if(dtkCount>0 && tvCount===0 && smartRet[0]['wx_msg_ret'] && smartRet[0]['wx_msg_ret'] !=='None'){
             // 只有dtk结果就直接跳转到优惠券页面
             window.location.href = "http://smart.quanchonger.com/wx/taobao.html?wx_msg_ret="+smartRet[0]['wx_msg_ret'];
+        }else if(dtkCount===0 && tvCount>0 && smartRet[0]['wx_msg_ret'] && smartRet[0]['wx_msg_ret'] !=='None'){
+            window.location.href = smartRet[0]['wx_msg_ret'];
         }else{
             // 绘制搜索结果页面
             renderHtml(smartRet);
