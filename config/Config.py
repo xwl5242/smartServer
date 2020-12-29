@@ -30,5 +30,7 @@ class Conf:
     # 大淘客相关
     DTK_APP_KEY = _config.get('dtk', 'app_key')
     DTK_APP_SECRET = _config.get('dtk', 'app_secret')
+    # 微信消息回复地址
+    WX_REPLY_TPL_URL = _config.get(f'wx_msg_{DB_PT}', 'reply_tpl_url')
 
 

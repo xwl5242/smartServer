@@ -1,13 +1,14 @@
 # -*- coding:utf-8 -*-
 import uuid
+import json
+import time
 import requests
 import threading
-# from config.DB import db
 from config.Config import Conf
+from taoke.DTK import DTKService
 from wechatpy import parse_message
 from wechat.WxService import WxService
 from wechat.MsgCrypt import WXBizMsgCrypt
-from dataoke.DTKService import DTKService
 from wechatpy.replies import ArticlesReply, TextReply
 
 
@@ -22,8 +23,8 @@ class MsgReply:
         :param wx_msg_id: 消息唯一id
         :return:
         """
-        import time, json
         save_time = time.time()
+        # 查询影视信息
         tv = requests.get('https://api.quandidi.top/vip/search/'+wx_key_word)
         if tv and tv.status_code == 200:
             tv = tv if tv else None
@@ -32,6 +33,7 @@ class MsgReply:
                 tv = f"http://xwlzhx20151118.quanchonger.com/index.php/" \
                     f"vod/search.html?wd={requests.utils.quote(wx_key_word)}"
                 WxService.save_smart_search(wx_id, wx_key_word, '0', save_time, wx_msg_id, tv)
+        # 查询优惠券信息
         good_info = DTKService.universal_parse(wx_key_word)
         if good_info:
             good_id = good_info['goodsId']
@@ -71,8 +73,9 @@ class MsgReply:
                 reply.add_article({
                     'title': u'快点我查看详情',
                     'description': u'客官，已经为您生成专属结果，快前往查看吧！',
-                    'url': 'http://smart.quanchonger.com/wx/search/ret?wx_id='+msg.source+'&msg_id='+msg_id,
-                    'image': 'https://www.quanchonger.com/msg_banner.png'
+                    'url': f'{Conf.WX_REPLY_TPL_URL}/wx/search/ret?wx_id='+msg.source+'&msg_id='+msg_id,
+                    'image': 'https://mmbiz.qpic.cn/mmbiz_png/iaibcyVicSUynI7qymsslgOYIKxEWT2S94C0Gic'
+                             'jrKuOg1fubJbiczmSEYpClX2PHX0QicCvsCibZl1eAAs0nWc3iblXFg/0?wx_fmt=png'
                 })
             if 'event' == msg.type:
                 reply = TextReply()
@@ -80,12 +83,14 @@ class MsgReply:
                 reply.target = msg.source
                 if 'subscribe' == msg.event:
                     # 用户关注
-                    reply.content = """终于等到你，欢迎您的关注!
-这里是您的智慧生活助手，在这里你将会体会到丰富有趣的科技交互！
-1. 公众号回复任意影视剧集名称关键字，即可快速搜索影视内容
-2. 公众号回复任意单个且完整的淘口令，即可快速搜索优惠内容
-3. 公众号会不间断更新其他丰富有趣的科技生活助手，敬请期待
-                    """
+                    reply.content = r"""终于等到你，欢迎您的关注![Awesome][Awesome][Awesome][Awesome][Awesome][Awesome]
+这里是您的智慧生活助手，在这里你将会体会到丰富有趣的科技交互！/:rose/:rose/:rose
+/:sun
+公众号回复任意影视剧集名称关键字，即可快速搜索影视内容
+/:sun
+公众号回复任意单个且完整的淘口令，即可快速搜索优惠内容
+/:sun
+公众号会不间断更新其他丰富有趣的科技生活助手，敬请期待"""
         else:
             pass
         if is_crypt:
