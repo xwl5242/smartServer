@@ -113,6 +113,12 @@ def wx_create_menu():
     return jsonify(json.loads(ret))
 
 
+@app.route('/music/search/<song_name>', methods=['GET'])
+def music_search(song_name):
+    from tools.Music import Music
+    return jsonify(music_list=Music.search(song_name))
+
+
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=8082, debug=True)
 
