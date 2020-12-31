@@ -23,7 +23,7 @@
         }
         if(dtkCount>0 && tvCount===0 && smartRet[0]['wx_msg_ret'] && smartRet[0]['wx_msg_ret'] !=='None'){
             // 只有dtk结果就直接跳转到优惠券页面
-            window.location.href = "../tb.html?wx_msg_ret="+smartRet[0]['wx_msg_ret'];
+            window.location.href = "../reply/tb.html?wx_msg_ret="+smartRet[0]['wx_msg_ret'];
         }else if(dtkCount===0 && tvCount>0 && smartRet[0]['wx_msg_ret'] && smartRet[0]['wx_msg_ret'] !=='None'){
             // 只有影视结果，跳转到影视详情页面
             window.location.href = smartRet[0]['wx_msg_ret'];
@@ -44,7 +44,7 @@
 
     // 绘制没有结果页面
     function renderNoRetHtml() {
-        window.location.href = "{{ url_for('wx_404', flag='no-result') }}";
+        window.location.href = "{{ url_for('reply_404', flag='no-result') }}";
     }
 
     // 页面刷新

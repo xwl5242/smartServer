@@ -13,6 +13,7 @@ class Conf:
     DB_USER = _config.get(f'db_{DB_PT}', 'user')
     DB_PASSWORD = _config.get(f'db_{DB_PT}', 'password')
     DB_DATABASE = _config.get(f'db_{DB_PT}', 'database')
+    DB_VIP_DATABASE = _config.get(f'db_{DB_PT}', 'vip_database')
     # wx公众平台相关
     WX_APP_ID = _config.get('wechat', 'app_id')
     WX_APP_SECRET = _config.get('wechat', 'app_secret')
@@ -33,4 +34,28 @@ class Conf:
     # 微信消息回复地址
     WX_REPLY_TPL_URL = _config.get(f'wx_msg_{DB_PT}', 'reply_tpl_url')
 
+    UAS = [
+        "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0;",
+        "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0; Trident/4.0)",
+        "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.6; rv:2.0.1) Gecko/20100101 Firefox/4.0.1",
+        "Mozilla/5.0 (Windows NT 6.1; rv:2.0.1) Gecko/20100101 Firefox/4.0.1",
+        "Opera/9.80 (Macintosh; Intel Mac OS X 10.6.8; U; en) Presto/2.8.131 Version/11.11",
+        "Opera/9.80 (Windows NT 6.1; U; en) Presto/2.8.131 Version/11.11",
+        "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Maxthon 2.0)",
+        "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; 360SE)"
+    ]
+
+    @classmethod
+    def mv_sub_type(cls):
+        sub_type_dict = {}
+        cls._config.get('mv', 'mv_sub_type')
+        sub_type_str = str(cls._config.get('mv', 'mv_sub_type'))
+        if sub_type_str:
+            temps = sub_type_str.split('#')
+            for temp in temps:
+                tt = temp.split(':')
+                types = tt[1].split(',')
+                sub_type_dict[tt[0]] = types
+        return sub_type_dict
 

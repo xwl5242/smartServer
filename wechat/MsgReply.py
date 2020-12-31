@@ -73,7 +73,7 @@ class MsgReply:
                 reply.add_article({
                     'title': u'快点我查看详情',
                     'description': u'客官，已经为您生成专属结果，快前往查看吧！',
-                    'url': f'{Conf.WX_REPLY_TPL_URL}/wx/search/ret?wx_id='+msg.source+'&msg_id='+msg_id,
+                    'url': f'{Conf.WX_REPLY_TPL_URL}/reply/result?wx_id='+msg.source+'&msg_id='+msg_id,
                     'image': 'https://mmbiz.qpic.cn/mmbiz_png/iaibcyVicSUynI7qymsslgOYIKxEWT2S94C0Gic'
                              'jrKuOg1fubJbiczmSEYpClX2PHX0QicCvsCibZl1eAAs0nWc3iblXFg/0?wx_fmt=png'
                 })

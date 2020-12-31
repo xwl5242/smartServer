@@ -24,14 +24,14 @@
                         <span class="coupons-data"><span class="coupons-data-icon">限</span>
                             {{ goods['couponStartTime']|substr(0, 11) }}-{{ goods['couponEndTime']|substr(0, 11) }}
                         </span>
-                        <span data-url="{{ url_for('wx_tb_detail', goodsId=goods['goodsId']) }}" class="coupons-btn">立即领券</span>
+                        <span data-url="{{ url_for('reply_tb_detail', goodsId=goods['goodsId']) }}" class="coupons-btn">立即领券</span>
                     </button>
                 </div>
             </div>
         </div>
         <div class="item-detail-view">
             <div class="item-wrap">
-                <a href="{{ url_for('wx_tb_detail', goodsId=goods['goodsId']) }}" class="item-detail">
+                <a href="{{ url_for('reply_tb_detail', goodsId=goods['goodsId']) }}" class="item-detail">
                     <div class="pic">
                         <img src="{{ goods['mainPic'] }}" >
                     </div>
@@ -51,7 +51,7 @@
                         </div>
                     </div>
                 </a>
-                <a href="{{ url_for('wx_tb_detail', goodsId=goods['goodsId']) }}" class="link">查看详情
+                <a href="{{ url_for('reply_tb_detail', goodsId=goods['goodsId']) }}" class="link">查看详情
                     <svg class="link-arrow" viewbox="0 0 200 200">
                         <g transform="scale(0.1953125, 0.1953125)">
                             <path d="M282.7264 1004.714667c8.738133 0 17.476267-3.345067 24.132267-10.001067l458.615467-458.5472c13.346133-13.346133 13.346133-34.9184 0-48.264533L306.858667 29.2864c-13.346133-13.346133-34.9184-13.346133-48.264533 0s-13.346133 34.9184 0 48.264533L693.077333 512 258.594133 946.449067c-13.346133 13.346133-13.346133 34.9184 0 48.264533C265.250133 1001.3696 273.988267 1004.714667 282.7264 1004.714667z"
@@ -152,7 +152,7 @@
             $("html").css("font-size", "25px");
             $("body").append(tpl);
         }else{
-            window.location.href = "{{ url_for('wx_404', flag='no-coupon') }}";
+            window.location.href = "{{ url_for('reply_404', flag='no-coupon') }}";
         }
     }
 
