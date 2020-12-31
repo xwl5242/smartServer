@@ -25,7 +25,7 @@ class MsgReply:
         """
         save_time = time.time()
         # 查询影视信息
-        tv = requests.get('https://api.quandidi.top/vip/search/'+wx_key_word)
+        tv = requests.get('https://smart.quanchonger.com/vip/search/'+wx_key_word)
         if tv and tv.status_code == 200:
             tv = tv if tv else None
             tv = json.loads(tv.content.decode('utf-8'))
@@ -63,20 +63,28 @@ class MsgReply:
         if 0 == ret:
             msg = parse_message(xml)
             if 'text' == msg.type:
-                msg_id = str(uuid.uuid4())
-                go_search_thread = threading.Thread(target=MsgReply.go_search,
-                                                    args=(msg.source, msg.content, msg_id,))
-                go_search_thread.start()
-                reply = ArticlesReply()
-                reply.source = msg.target
-                reply.target = msg.source
-                reply.add_article({
-                    'title': u'快点我查看详情',
-                    'description': u'客官，已经为您生成专属结果，快前往查看吧！',
-                    'url': f'{Conf.WX_REPLY_TPL_URL}/reply/result?wx_id='+msg.source+'&msg_id='+msg_id,
-                    'image': 'https://mmbiz.qpic.cn/mmbiz_png/iaibcyVicSUynI7qymsslgOYIKxEWT2S94C0Gic'
-                             'jrKuOg1fubJbiczmSEYpClX2PHX0QicCvsCibZl1eAAs0nWc3iblXFg/0?wx_fmt=png'
-                })
+                reply, _reply = WxService.query_key_reply()
+                _msg_lower = str(msg.content).lower()
+                if reply and str(reply).find(_msg_lower) >= 0:
+                    reply = TextReply()
+                    reply.source = msg.target
+                    reply.target = msg.source
+                    reply.content = _reply[_msg_lower]
+                else:
+                    msg_id = str(uuid.uuid4())
+                    go_search_thread = threading.Thread(target=MsgReply.go_search,
+                                                        args=(msg.source, msg.content, msg_id,))
+                    go_search_thread.start()
+                    reply = ArticlesReply()
+                    reply.source = msg.target
+                    reply.target = msg.source
+                    reply.add_article({
+                        'title': u'快点我查看详情',
+                        'description': u'客官，已经为您生成专属结果，快前往查看吧！',
+                        'url': f'{Conf.WX_REPLY_TPL_URL}/reply/result.html?wx_id='+msg.source+'&msg_id='+msg_id,
+                        'image': 'https://mmbiz.qpic.cn/mmbiz_png/iaibcyVicSUynI7qymsslgOYIKxEWT2S94C0Gic'
+                                 'jrKuOg1fubJbiczmSEYpClX2PHX0QicCvsCibZl1eAAs0nWc3iblXFg/0?wx_fmt=png'
+                    })
             if 'event' == msg.type:
                 reply = TextReply()
                 reply.source = msg.target

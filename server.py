@@ -128,6 +128,37 @@ def wx_create_menu():
     return jsonify(json.loads(ret))
 
 
+@app.route('/wx_update_menu.html', methods=['GET', 'POST'])
+def wx_update_menu():
+    """
+    微信更新自定义菜单
+    :return:
+    """
+    ret = WxMenuService().update({
+        "button": [
+            {
+                "type": "view",
+                "name": "优惠商城",
+                "url": "https://www.quanchonger.com"
+            },
+            # {
+            #     "type": "view",
+            #     "name": "小汪影视",
+            #     "url": "http://xwlzhx20151118.quanchonger.com"
+            # }
+            {
+                "type": "miniprogram",
+                "name": "小汪影视",
+                "url": "http://mp.weixin.qq.com",
+                "appid": "wx1f5d6afca3c44aab",
+                "pagepath": "pages/index/index"
+            }
+
+        ]
+    })
+    return jsonify(ret)
+
+
 ##################
 # 智能平台相关请求 #
 ##################

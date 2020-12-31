@@ -28,8 +28,30 @@ class WxMenuService:
     def create(self, menu):
         return self.client.menu.create(menu)
 
+    def update(self, menu):
+        return self.client.menu.update(menu)
+
 
 class WxService:
+
+    @staticmethod
+    @db
+    def query_key_reply(cursor):
+        sql = "select key_word, reply from wx_msg_keyword_reply "
+        cursor.execute(sql)
+        reply_list = cursor.fetchall()
+        if reply_list and len(reply_list) > 0:
+            key_words_list = []
+            key_words_dict = {}
+            for reply in reply_list:
+                kw = str(reply['key_word']).lower()
+                key_words_list.append(kw)
+                kws = str(kw).split(",")
+                for _kw in kws:
+                    _kw = str(_kw).lower()
+                    key_words_dict[_kw] = reply['reply']
+            return ",".join(key_words_list), key_words_dict
+        return None, None
 
     @staticmethod
     @db
