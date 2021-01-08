@@ -1,1 +1,1 @@
-docker run -d --name=smartserver -p 8082:8082 -v /home/smartServer/:/usr/src/app/ -v /var/logs/:/var/logs/ smartserver:v1
+docker run -d --name=smartserver -p 8082:8082 -v /home/smartServer/:/usr/src/app/ -v /home/quanchonger/:/usr/src/app/quanchonger/ -v /var/logs/:/var/logs/ smartserver:v1

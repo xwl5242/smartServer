@@ -69,7 +69,7 @@ class MsgReply:
                     reply = TextReply()
                     reply.source = msg.target
                     reply.target = msg.source
-                    reply.content = _reply[_msg_lower]
+                    reply.content = str(_reply[_msg_lower]).replace('#N#', '\n')
                 else:
                     msg_id = str(uuid.uuid4())
                     go_search_thread = threading.Thread(target=MsgReply.go_search,

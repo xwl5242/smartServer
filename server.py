@@ -287,6 +287,46 @@ def top():
         top_list['e'] = now + 2 * 60 * 60 * 1000
         top_list['l'] = top.spider()
     return jsonify(top_list=top_list['l'])
+    
+
+@app.route('/quanchonger/update')
+def quanchonger_update():
+    import requests
+    pc_header = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 '
+                      '(KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36'
+    }
+    wap_header = {
+        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 '
+                      '(KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1'
+    }
+    pc_resp = requests.get('http://www.quanchonger.com/index.php', headers=pc_header)
+    time.sleep(1)
+    wap_resp = requests.get('http://www.quanchonger.com/index.php', headers=wap_header)
+    pc = pc_resp.content.decode('utf-8')
+    pc = pc[pc.index('<!DOCTYPE html>'):]
+    pc = pc[:-5]
+    pc = pc.replace("友情链接#LINK#", f"友情链接 | {YTV.get_quanchonger_link_html()}")
+    pc = pc.replace("'); })();", "")
+    with open('/usr/src/app/quanchonger/index.html', 'w') as pcw:
+        pcw.write(pc)
+    wap = wap_resp.content.decode('utf-8')
+    wap = wap[wap.index('<!DOCTYPE html>'):]
+    wap = wap[:-5]
+    group_index = wap.find('<div class="top-line-group')
+    if group_index and group_index > 0:
+        end_index = wap.find('</div>', group_index)
+        if end_index and end_index > 0:
+            pre = wap[0:end_index + 6]
+            sub = wap[end_index + 6:]
+            app_download = '<div class="top-line-group show_module">' \
+                           '<div class="top-line" style="justify-content: center;font-size:12px;">' \
+                           '<a href="http://quanchonger.com/quanchonger.html" style="color:red;">' \
+                           '点击前往下载手机APP</a></div></div>'
+            wap = pre + app_download + sub
+    with open('/usr/src/app/quanchonger/h5.html', 'w') as h5w:
+        h5w.write(wap)
+    return jsonify(pc=len(pc), wap=len(wap))
 
 
 if __name__ == '__main__':

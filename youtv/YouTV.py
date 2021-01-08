@@ -12,6 +12,18 @@ class YTV:
 
     @staticmethod
     @vip_db
+    def get_quanchonger_link_html(cursor):
+        html = ''
+        sql = "select * from quanchonger_link where del_flag='0' order by seq asc"
+        cursor.execute(sql)
+        links = cursor.fetchall()
+        if links and len(links) > 0:
+            for link in links:
+                html += f'<a href="{link["link_url"]}" target="_blank">{link["link_name"]}</a> | '
+        return html
+
+    @staticmethod
+    @vip_db
     def show_share_url(cursor):
         sql = "select switch_status ss from mac_setting where id=1"
         cursor.execute(sql)
