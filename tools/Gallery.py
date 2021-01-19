@@ -72,8 +72,8 @@ class Gallery:
                     temp = {}
                     for wk in wp.keys():
                         if str(wk).find('img_') == 0 or str(wk) == 'id' \
-                                or str(wk) == 'resolution' or str(wk) == 'url':
-                            temp[wk] = wp[wk]
+                                or str(wk) == 'resolution' or str(wk) == 'url' or str(wk) == 'utag':
+                            temp[wk] = str(wp[wk]).strip().replace(" ", "")
                     result.append(temp)
                 return result
         return None
