@@ -46,7 +46,7 @@ class NeteaseMusic:
                         singer = _song['ar'][0]['name']
                     if _song['al']:
                         fm_url = _song['al']['picUrl']
-                    music_list.append({'song_name': song_name, 'singer': singer,
+                    music_list.append({'song_name': song_name, 'singer': singer, 'song_id': song_id, 'type': 'netease',
                                        'fm_url': fm_url, 'url': f"http://music.163.com/song/{song_id}"})
             return music_list
         except Exception as e:
@@ -86,7 +86,6 @@ class QQMusic:
     @staticmethod
     def music_list(song_name):
         music_list = []
-        sip = ['http://ws.stream.qqmusic.qq.com/', 'http://isure.stream.qqmusic.qq.com/']
         try:
             song_search_url = f"https://c.y.qq.com/soso/fcgi-bin/client_search_cp?p=1&n=2&w={song_name}&format=json"
             song_search_ret = requests.get(song_search_url)
@@ -99,7 +98,7 @@ class QQMusic:
                     song_name = song['songname']
                     singer = song['singer'][0]['name'] if song['singer'] and len(song['singer']) > 0 else ''
                     fm_url = f"http://y.gtimg.cn/music/photo_new/T002R180x180M000{albummid}.jpg"
-                    music_list.append({'song_name': song_name, 'signer': singer, 'songmid': songmid,
+                    music_list.append({'song_name': song_name, 'signer': singer, 'song_id': songmid, 'type': 'qq',
                                        'fm_url': fm_url, 'url': f'http://y.qq.com/#type=song&id={song.get("songid")}'})
             return music_list
         except Exception as e:
@@ -109,6 +108,7 @@ class QQMusic:
 
     @staticmethod
     def download(songmid):
+        pre_url = "https://ws.stream.qqmusic.qq.com/";
         play_prev_url = f"https://u.y.qq.com/cgi-bin/musicu.fcg?format=json&data=" \
             f"%7B%22req_0%22%3A%7B%22module%22%3A%22vkey.GetVkeyServer%22%2C%22" \
             f"method%22%3A%22CgiGetVkey%22%2C%22param%22%3A%7B%22guid%22%3A%22358840384%22%2C%22" \
@@ -119,10 +119,11 @@ class QQMusic:
             f"json%22%2C%22ct%22%3A24%2C%22cv%22%3A0%7D%7D"
         play_ret = requests.get(play_prev_url)
         play_ret = json.loads(play_ret.text)
+        print(play_ret)
         if play_ret['code'] == 0 and play_ret['req_0']['code'] == 0:
-            play_data = play_ret['req_0']['data']['midurlinfo']
-            if len(play_data) > 0:
-                return play_data[0]['purl']
+            play_data = play_ret['req_0']['data']['testfilewifi']
+            if play_data:
+                return pre_url + play_data
         return None
 
 
@@ -131,16 +132,24 @@ class Music:
     @staticmethod
     def search(song_name):
         music_list = []
-        music_list.extend(QQMusic.music_list(song_name))
+        # music_list.extend(QQMusic.music_list(song_name))
         music_list.extend(NeteaseMusic.music_list(song_name))
         return [music for music in music_list if music['url']]
+
+    @staticmethod
+    def download(song_id):
+        try:
+            song_id = int(song_id)
+            return NeteaseMusic.download(song_id)
+        except:
+            return QQMusic.download(song_id)
 
 
 if __name__ == '__main__':
     # print(NeteaseMusic.music_list('无期'))
     # print(NeteaseMusic.download('1374154676'))
-    # print(QQMusic.music_list('无期'))
-    print(Music.search('无期'))
+    print(QQMusic.music_list('无期'))
+    # print(Music.download('004bRWFg3fej9y'))
     # print(len(Music.search('无期')))
 
 

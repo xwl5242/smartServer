@@ -1,7 +1,10 @@
 # -*- coding:utf-8 -*-
 import json
 import time
+from tools.Chp import CHP
 from youtv.YouTV import YTV
+from tools.Music import Music
+from tools.Gallery import Gallery
 from wechat.WxService import WxService, WxMenuService
 from flask import Flask, request, render_template, jsonify
 
@@ -177,9 +180,46 @@ def smart_dy_parse():
     return jsonify({"file_id": file_id})
 
 
-##################
+@app.route('/smart/music/search/<kw>')
+def smart_music_search(kw):
+    musics = Music.search(kw)
+    return jsonify(musics=musics)
+
+
+@app.route('/smart/music/download/<song_id>')
+def smart_music_download(song_id):
+    return jsonify(download_url=Music.download(song_id))
+
+
+@app.route('/smart/chp')
+def smart_chp():
+    import random
+    arr = [0, 0, 0, 0, 0, 1, 1, 1, 1, 1]
+    if random.choice(arr) == 0:
+        return CHP.chp()
+    else:
+        return CHP.tg()
+
+
+@app.route('/smart/gif/<page_no>')
+def smart_gif(page_no):
+    page_no = int(page_no) if page_no else 0
+    return jsonify(gifs=Gallery.gif(page_no))
+
+
+@app.route('/smart/wallpaper/type')
+def smart_wallpaper_type():
+    return jsonify(wp_type=Gallery.wallpaper_type())
+
+
+@app.route('/smart/wallpaper/list/<t>/<page_no>')
+def smart_wallpaper_list(t, page_no):
+    return jsonify(wps=Gallery.wallpaper_list(t, page_no))
+
+
+####################
 # 莜视频平台相关请求 #
-##################
+####################
 top_list = {'l': [], 'e': None}
 # 页面顶部轮播banner
 banner_list = {'l': [], 'e': None}
@@ -283,12 +323,14 @@ def top():
     if expire and (now < expire - 60 * 1000):
         pass
     else:
-        print('---调用top---')
-        top_list['e'] = now + 2 * 60 * 60 * 1000
+        top_list['e'] = now + 7200 * 1000
         top_list['l'] = top.spider()
     return jsonify(top_list=top_list['l'])
     
 
+#################
+# 券宠儿相关请求 #
+#################
 @app.route('/quanchonger/update')
 def quanchonger_update():
     import requests
