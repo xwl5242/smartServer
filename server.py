@@ -193,12 +193,7 @@ def smart_music_download(song_id):
 
 @app.route('/smart/chp')
 def smart_chp():
-    import random
-    arr = [0, 0, 0, 0, 0, 1, 1, 1, 1, 1]
-    if random.choice(arr) == 0:
-        return CHP.chp()
-    else:
-        return CHP.tg()
+    return CHP.chp()
 
 
 @app.route('/smart/gif/<page_no>')
