@@ -4,6 +4,7 @@ import time
 from tools.Chp import CHP
 from youtv.YouTV import YTV
 from tools.Music import Music
+from tools.Smart import Smart
 from tools.Gallery import Gallery
 from wechat.WxService import WxService, WxMenuService
 from flask import Flask, request, render_template, jsonify
@@ -210,6 +211,14 @@ def smart_wallpaper_type():
 @app.route('/smart/wallpaper/list/<t>/<page_no>')
 def smart_wallpaper_list(t, page_no):
     return jsonify(wps=Gallery.wallpaper_list(t, page_no))
+
+
+@app.route('/smart/suggest/save', methods=['POST'])
+def smart_suggest_save():
+    tmp = request.json
+    if tmp:
+        Smart.suggest_save(tmp['suggest'])
+    return jsonify(code=0)
 
 
 ####################

@@ -2,7 +2,7 @@
 import json
 import requests
 from urllib.parse import quote
-from random import choice
+from random import choice, shuffle
 from config.Config import Conf
 
 
@@ -51,13 +51,24 @@ class Gallery:
 
     @staticmethod
     def wallpaper_type():
+        colors = ['#ED5736', '#F00056', '#F47983', '#F20C00', '#FF2121',
+                  '#C83C23', '#FF4C00', '#FF4E20', '#F35336', '#CB3A56',
+                  '#FF2D51', '#C91F37', '#FF3300', '#DC3023', '#F9906F',
+                  '#ED5A65', '#EE3F4D', '#C02C38', '#A61B29', '#D11A2D',
+                  '#C21F30', '#DE1C31', '#EF475D', '#ED556A', '#F03752',
+                  '#EE2746', '#EE4863', '#EE4866', '#CC163A', '#BF3553',
+                  '#EC2C64', '#EB507E', '#EB3C70', '#EA517F', '#ED2F6A',
+                  '#EF3473', '#E16C96', '#D13C74', '#EC4E8A', '#DE3F7C',
+                  '#EE2C79', '#EF498B', '#EC2D7A',  '#D2357D']
+        shuffle(colors)
         url = f"https://api.mlwei.com/wallpaper/api/?cid=tags"
         resp = requests.get(url, headers={"User-Agent": choice(Conf.UAS)})
         if resp and resp.content:
             resp = json.loads(resp.content, encoding='utf-8')
             if resp['errno'] == '0' and resp['data'] and len(resp['data']) > 0:
                 resp = resp['data']
-                return [{'id': wp['id'], 'name': wp['name']} for wp in resp]
+                tmp_colors = colors[0: len(resp)]
+                return [{'id': wp['id'], 'name': wp['name'], 'color': tmp_colors[i]} for i, wp in enumerate(resp)]
 
     @staticmethod
     def wallpaper_list(t, page_no):
@@ -80,5 +91,5 @@ class Gallery:
 
 
 if __name__ == '__main__':
-    print(Gallery.gif(7))
+    print(Gallery.wallpaper_type())
 
