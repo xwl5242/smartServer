@@ -181,14 +181,6 @@ def smart_dy_parse():
     return jsonify({"file_id": file_id})
 
 
-@app.route('/smart/dy/media/<file_id>')
-def smart_dy_media(file_id):
-    import os
-    file_dir = os.path.join(os.path.dirname(__file__), 'tools', 'mv')
-    file_path = os.path.join(file_dir, f'{file_id}.mp4')
-    return send_file(file_path)
-
-
 @app.route('/smart/dy/medias')
 def smart_dy_medias():
     import os
