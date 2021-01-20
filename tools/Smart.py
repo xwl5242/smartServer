@@ -12,4 +12,10 @@ class Smart:
             f"values('{suggest}',{time.time()},'0')"
         cursor.execute(sql)
 
+    @staticmethod
+    @db
+    def switchs(cursor):
+        sql = "select * from ysoft_switch where id=1"
+        cursor.execute(sql)
+        return cursor.fetchone()
 

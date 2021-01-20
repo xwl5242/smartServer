@@ -205,6 +205,11 @@ def smart_music_download(song_id):
     return jsonify(download_url=Music.download(song_id))
 
 
+@app.route('/smart/switchs')
+def smart_switchs():
+    return jsonify(switchs=Smart.switchs())
+
+
 @app.route('/smart/chp')
 def smart_chp():
     return CHP.chp()
