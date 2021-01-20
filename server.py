@@ -7,7 +7,7 @@ from tools.Music import Music
 from tools.Smart import Smart
 from tools.Gallery import Gallery
 from wechat.WxService import WxService, WxMenuService
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, render_template, jsonify, send_file
 
 
 def substr(string, start, end):
@@ -179,6 +179,27 @@ def smart_dy_parse():
     else:
         file_id = None
     return jsonify({"file_id": file_id})
+
+
+@app.route('/smart/dy/media/<file_id>')
+def smart_dy_media(file_id):
+    import os
+    file_dir = os.path.join(os.path.dirname(__file__), 'tools', 'mv')
+    file_path = os.path.join(file_dir, f'{file_id}.mp4')
+    return send_file(file_path)
+
+
+@app.route('/smart/dy/medias')
+def smart_dy_medias():
+    import os
+    if 'file_id' in request.args:
+        file_id = request.args['file_id']
+        file_dir = os.path.join(os.path.dirname(__file__), 'tools', 'mv')
+        file_path = os.path.join(file_dir, f'{file_id}.re')
+        with open(file_path, 'r') as f:
+            return jsonify(json.loads(f.read()))
+    else:
+        return jsonify({"error": "请传递file_id"})
 
 
 @app.route('/smart/music/search/<kw>')

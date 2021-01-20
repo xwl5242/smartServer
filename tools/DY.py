@@ -17,11 +17,11 @@ class DouYin:
             file_dir = os.path.join(os.path.dirname(__file__), 'mv')
             if v_id:
                 if not os.path.exists(os.path.join(file_dir, f'{v_id}.mp4')):
-                    share_url = f'https://www.iesdouyin.com/share/video/{v_id}/?region=CN&mid={v_id}'
-                    html = requests.get(share_url, headers={'User-Agent': choice(Conf.UAS)}).text
-                    dy_tk = re.findall(r'dytk: "(\w{64})"', html)[0]
-                    play_url = f'https://www.iesdouyin.com/web/api/v2/aweme/iteminfo/?item_ids={v_id}&dytk={dy_tk}'
-                    res_json = requests.get(play_url).json()
+                    # share_url = f'https://www.iesdouyin.com/share/video/{v_id}/?region=CN&mid={v_id}'
+                    # html = requests.get(share_url, headers={'User-Agent': choice(Conf.UAS)}).text
+                    # dy_tk = re.findall(r'dytk: "(\w{64})"', html)[0]
+                    play_url = f'https://www.iesdouyin.com/web/api/v2/aweme/iteminfo/?item_ids={v_id}'
+                    res_json = requests.get(play_url, headers={'User-Agent': choice(Conf.UAS)}).json()
                     video_json = res_json['item_list'][0]['video']
                     music_json = res_json['item_list'][0]['music']
                     video_url = str(video_json['play_addr']['url_list'][0]).replace('playwm', 'play')
