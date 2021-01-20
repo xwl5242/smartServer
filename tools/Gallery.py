@@ -72,6 +72,7 @@ class Gallery:
 
     @staticmethod
     def wallpaper_list(t, page_no):
+        page_no = int(page_no) if page_no else 0
         url = f"https://api.mlwei.com/wallpaper/api/?cid={t}&start={page_no*10}&count=10"
         resp = requests.get(url, headers={"User-Agent": choice(Conf.UAS)})
         if resp and resp.content:
@@ -87,7 +88,7 @@ class Gallery:
                             temp[wk] = str(wp[wk]).strip().replace(" ", "")
                     result.append(temp)
                 return result
-        return None
+        return []
 
 
 if __name__ == '__main__':
