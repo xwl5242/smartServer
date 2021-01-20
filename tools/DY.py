@@ -29,7 +29,9 @@ class DouYin:
                     if video_url:
                         v_file_path = os.path.join(file_dir, f'{v_id}.mp4')
                         d_file_path = os.path.join(file_dir, f'{v_id}.re')
-                        v_resp = requests.get(video_url, headers={'User-Agent': Conf.UAS[-1]})
+                        import time
+                        time.sleep(1)
+                        v_resp = requests.get(video_url, headers={'User-Agent': choice(Conf.UAS)})
                         with open(v_file_path, 'wb') as fb:
                             fb.write(v_resp.content)
                         res = {
@@ -45,4 +47,7 @@ class DouYin:
             traceback.print_exc()
             return None
 
+
+if __name__ == '__main__':
+    DouYin.parse('https://v.douyin.com/ErAB1J')
 
