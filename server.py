@@ -223,7 +223,12 @@ def smart_gif(page_no):
 
 @app.route('/smart/wallpaper/type')
 def smart_wallpaper_type():
-    return jsonify(wp_type=Gallery.wallpaper_type())
+    if str(Smart.switchs()['music_switch']) == '0':
+        wp_type = Gallery.wallpaper_type()
+        wp_type = [wt for wt in wp_type if str(wt['id']) not in ['6', '30', '36']]
+    else:
+        wp_type = []
+    return jsonify(wp_type=wp_type)
 
 
 @app.route('/smart/wallpaper/list/<t>/<page_no>')
