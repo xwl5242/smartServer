@@ -31,6 +31,16 @@ class YTV:
 
     @staticmethod
     @vip_db
+    def get_mac_ysp_aduit_vods(cursor):
+        sql = "select * from mac_ysp_setting where id=1"
+        cursor.execute(sql)
+        setting = cursor.fetchone()
+        if setting and setting['show_vod_ids']:
+            return setting['show_vod_ids']
+        return None
+
+    @staticmethod
+    @vip_db
     def show_share_url(cursor):
         sql = "select switch_status ss from mac_setting where id=1"
         cursor.execute(sql)
@@ -101,9 +111,11 @@ class YTV:
     @staticmethod
     @vip_db
     def get_news(cursor):
+        vod_list = YTV.get_mac_ysp_aduit_vods()
+        t_sql = f" and vod_id in ({vod_list}) " if vod_list else ""
         sql = f"select vod_id,type_id,vod_name,vod_pic,vod_actor,vod_director,vod_blurb,vod_remarks," \
               f"vod_area,vod_lang,vod_year,vod_score,vod_score_all,vod_score_num,vod_time,vod_serial from mac_vod " \
-              f"where vod_status='1' and type_id not in (11, 21) order by vod_time_add desc limit 0,9"
+              f"where vod_status='1' {t_sql} and type_id not in (11, 21) order by vod_time_add desc limit 0,9"
         cursor.execute(sql)
         return cursor.fetchall()
 
@@ -112,9 +124,12 @@ class YTV:
     def get_mv_by_type(cursor, mv_type, page_no, page_size):
         page_no = int(page_no)
         page_size = int(page_size)
+        vod_list = YTV.get_mac_ysp_aduit_vods()
+        t_sql = f" and vod_id in ({vod_list}) " if vod_list else ""
+        page_no = 0 if vod_list else page_no
         sql = f"select vod_id,type_id,vod_name,vod_pic,vod_actor,vod_director,vod_blurb,vod_remarks," \
              f"vod_area,vod_lang,vod_year,vod_score,vod_score_all,vod_score_num,vod_time,vod_serial from mac_vod " \
-             f"where vod_status='1' and type_id={mv_type} and type_id not in (11, 21) order by vod_time_add desc " \
+             f"where vod_status='1' {t_sql} and type_id={mv_type} and type_id not in (11, 21) order by vod_time_add desc " \
               f"limit {page_no * page_size},{page_size}"
         cursor.execute(sql)
         return cursor.fetchall()
@@ -122,7 +137,9 @@ class YTV:
     @staticmethod
     @vip_db
     def get_mv_by_type_count(cursor, mv_type):
-        sql = f"select count(1) total from mac_vod where vod_status='1' and type_id not in (11, 21) and type_id={mv_type}"
+        vod_list = YTV.get_mac_ysp_aduit_vods()
+        t_sql = f" and vod_id in ({vod_list}) " if vod_list else ""
+        sql = f"select count(1) total from mac_vod where vod_status='1' {t_sql} and type_id not in (11, 21) and type_id={mv_type}"
         cursor.execute(sql)
         total = cursor.fetchone()
         return total['total'] if total else 0
@@ -132,9 +149,12 @@ class YTV:
     def get_mv_by_dy(cursor, page_no, page_size):
         page_no = int(page_no)
         page_size = int(page_size)
+        vod_list = YTV.get_mac_ysp_aduit_vods()
+        t_sql = f" and vod_id in ({vod_list}) " if vod_list else ""
+        page_no = 0 if vod_list else page_no
         sql = f"select vod_id,type_id,vod_name,vod_pic,vod_actor,vod_director,vod_blurb,vod_remarks," \
               f"vod_area,vod_lang,vod_year,vod_score,vod_score_all,vod_score_num,vod_time,vod_serial from mac_vod " \
-              f"where vod_status='1' and type_id not in (11, 21) and type_id between 6 and 12 order by vod_time_add desc " \
+              f"where vod_status='1' {t_sql} and type_id not in (11, 21) and type_id between 6 and 12 order by vod_time_add desc " \
               f"limit {page_no * page_size},{page_size}"
         cursor.execute(sql)
         return cursor.fetchall()
@@ -144,9 +164,12 @@ class YTV:
     def get_mv_by_ds(cursor, page_no, page_size):
         page_no = int(page_no)
         page_size = int(page_size)
+        vod_list = YTV.get_mac_ysp_aduit_vods()
+        t_sql = f" and vod_id in ({vod_list}) " if vod_list else ""
+        page_no = 0 if vod_list else page_no
         sql = f"select vod_id,type_id,vod_name,vod_pic,vod_actor,vod_director,vod_blurb,vod_remarks," \
               f"vod_area,vod_lang,vod_year,vod_score,vod_score_all,vod_score_num,vod_time,vod_serial from mac_vod " \
-              f"where vod_status='1' and type_id not in (11, 21) and type_id between 13 and 16 order by vod_time_add desc " \
+              f"where vod_status='1' {t_sql} and type_id not in (11, 21) and type_id between 13 and 16 order by vod_time_add desc " \
               f"limit {page_no * page_size},{page_size}"
         cursor.execute(sql)
         return cursor.fetchall()
@@ -163,9 +186,11 @@ class YTV:
     @staticmethod
     @vip_db
     def get_mv_by_name(cursor, tv_name):
+        vod_list = YTV.get_mac_ysp_aduit_vods()
+        t_sql = f" and vod_id in ({vod_list}) " if vod_list else ""
         sql = f"select vod_id,type_id,vod_name,vod_pic,vod_actor,vod_director,vod_blurb,vod_remarks," \
               f"vod_area,vod_lang,vod_year,vod_score,vod_score_all,vod_score_num,vod_time,vod_serial from mac_vod " \
-              f"where vod_status='1' and type_id not in (11, 21) and vod_name like '%{tv_name}%' order by vod_time_add desc"
+              f"where vod_status='1' {t_sql} and type_id not in (11, 21) and vod_name like '%{tv_name}%' order by vod_time_add desc"
         cursor.execute(sql)
         return cursor.fetchall()
 
