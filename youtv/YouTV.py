@@ -24,6 +24,13 @@ class YTV:
 
     @staticmethod
     @vip_db
+    def get_mac_ysp_setting(cursor):
+        sql = "select * from mac_ysp_setting where id=1"
+        cursor.execute(sql)
+        return cursor.fetchone()
+
+    @staticmethod
+    @vip_db
     def show_share_url(cursor):
         sql = "select switch_status ss from mac_setting where id=1"
         cursor.execute(sql)
@@ -70,25 +77,9 @@ class YTV:
         now = time.strftime('%Y-%m-%d', time.localtime(time.time()))
         now = int(time.mktime(time.strptime(now, '%Y-%m-%d')))
         sql = f"select count(1) total from mac_vod where vod_time_add > {now}"
-        print(sql)
         cursor.execute(sql)
         total = cursor.fetchone()
         return total['total'] if total else 0
-
-    @staticmethod
-    @vip_db
-    def get_soft_list(cursor, kw, page_no, page_size):
-        page_no = int(page_no)
-        page_size = int(page_size)
-        kw_where = f" and (title like '%%{kw}%%') " if kw else ''
-        sql = f"select * from soft where del_flag='0' {kw_where} order by create_time desc " \
-              f"limit {page_no*page_size},{page_size}"
-        cursor.execute(sql)
-        count_sql = f"select count(1) total from soft where del_flag='0' {kw_where}"
-        soft_list = cursor.fetchall()
-        cursor.execute(count_sql)
-        total = cursor.fetchone()['total']
-        return soft_list, total
 
     @staticmethod
     def get_mv_type_list(mv_type, page_no, page_size):

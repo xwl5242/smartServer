@@ -34,7 +34,7 @@ class Gallery:
                         if resp['code'] == 0 and resp['data'] \
                                 and resp['data']['list'] and len(resp['data']['list']) > 0:
                             gif_list = resp['data']['list']
-                            return [{'url': gif['url'], 'title': gif['subText']} for gif in gif_list]
+                            return [{'url': str(gif['url']).replace("http://", 'https://'), 'title': gif['subText']} for gif in gif_list]
         return []
 
     @staticmethod
@@ -46,7 +46,7 @@ class Gallery:
             if resp['code'] == 0 and resp['data'] \
                     and resp['data']['result'] and len(resp['data']['result']) > 0:
                 gif_list = resp['data']['result']
-                return [{'url': gif['gifurl'], 'title': gif['title']} for gif in gif_list]
+                return [{'url': str(gif['gifurl']).replace('http://', 'https://'), 'title': gif['title']} for gif in gif_list]
         return []
 
     @staticmethod
@@ -85,7 +85,7 @@ class Gallery:
                     for wk in wp.keys():
                         if str(wk).find('img_') == 0 or str(wk) == 'id' \
                                 or str(wk) == 'resolution' or str(wk) == 'url' or str(wk) == 'utag':
-                            temp[wk] = str(wp[wk]).strip().replace(" ", "")
+                            temp[wk] = str(wp[wk]).strip().replace(" ", "").replace("http://", "https://")
                     result.append(temp)
                 return result
         return []

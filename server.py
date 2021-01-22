@@ -156,8 +156,14 @@ def wx_update_menu():
                 "url": "http://mp.weixin.qq.com",
                 "appid": "wx1f5d6afca3c44aab",
                 "pagepath": "pages/index/index"
+            },
+            {
+                "type": "miniprogram",
+                "name": "智慧助手",
+                "url": "http://mp.weixin.qq.com",
+                "appid": "wxc2a9b37969814f8a",
+                "pagepath": "pages/index/index"
             }
-
         ]
     })
     return jsonify(ret)
@@ -227,7 +233,7 @@ def smart_wallpaper_type():
         wp_type = Gallery.wallpaper_type()
         wp_type = [wt for wt in wp_type if str(wt['id']) not in ['6', '30', '36']]
     else:
-        wp_type = []
+        wp_type = Gallery.wallpaper_type()
     return jsonify(wp_type=wp_type)
 
 
@@ -316,6 +322,11 @@ def switch_status():
 @app.route('/vip/mac_setting')
 def mac_setting():
     return jsonify(mac_setting=YTV.mac_setting())
+
+
+@app.route('/vip/audit/setting')
+def mac_ysp_setting():
+    return jsonify(setting=YTV.get_mac_ysp_setting())
 
 
 @app.route('/vip/banner')
