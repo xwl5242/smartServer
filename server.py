@@ -264,11 +264,12 @@ def index():
     首页
     :return:
     """
-    news = YTV.get_news()
-    dys = YTV.get_mv_by_dy(2, 9)
-    dss = YTV.get_mv_by_ds(2, 9)
-    zys = YTV.get_mv_by_type(3, 2, 9)
-    dms = YTV.get_mv_by_type(4, 2, 9)
+    ver = str(request.args.get('ver', 'V10'))
+    news = YTV.get_news(ver)
+    dys = YTV.get_mv_by_dy(ver, 2, 9)
+    dss = YTV.get_mv_by_ds(ver, 2, 9)
+    zys = YTV.get_mv_by_type(ver, 3, 2, 9)
+    dms = YTV.get_mv_by_type(ver, 4, 2, 9)
     mvs = {'dys': dys, 'dss': dss, 'zys': zys, 'dms': dms}
     total = YTV.get_vod_total()
     today = YTV.get_vod_update()
@@ -281,16 +282,18 @@ def mvtypes():
     return jsonify(mv_types=mv_types)
 
 
-@app.route('/vip/mv/type/<mv_type>/<pageno>')
-def mv_type_pageno(mv_type, pageno):
-    mvs = YTV.get_mv_type_list(mv_type, pageno, 9)
+@app.route('/vip/mv/type/<mv_type>/<page_no>')
+def mv_type_pageno(mv_type, page_no):
+    ver = str(request.args.get('ver', 'V10'))
+    mvs = YTV.get_mv_type_list(ver, mv_type, page_no, 9)
     return jsonify(mvs=mvs)
 
 
-@app.route('/vip/mv/subtype/<mv_subtype>/<pageno>')
-def mv_subtype_pageno(mv_subtype, pageno):
-    mvs = YTV.get_mv_by_type(mv_subtype, pageno, 9)
-    total = YTV.get_mv_by_type_count(mv_subtype)
+@app.route('/vip/mv/subtype/<mv_subtype>/<page_no>')
+def mv_subtype_pageno(mv_subtype, page_no):
+    ver = str(request.args.get('ver', 'V10'))
+    mvs = YTV.get_mv_by_type(ver, mv_subtype, page_no, 9)
+    total = YTV.get_mv_by_type_count(ver, mv_subtype)
     return jsonify(mvs=mvs, total=total)
 
 
@@ -301,7 +304,8 @@ def search(tv_name):
     :param tv_name: 视频名称
     :return: 视频mv list
     """
-    return jsonify(mvs=YTV.get_mv_by_name(tv_name))
+    ver = str(request.args.get('ver', 'V10'))
+    return jsonify(mvs=YTV.get_mv_by_name(ver, tv_name))
 
 
 @app.route('/vip/detail/<tv_id>')
@@ -326,7 +330,8 @@ def mac_setting():
 
 @app.route('/vip/audit/setting')
 def mac_ysp_setting():
-    return jsonify(setting=YTV.get_mac_ysp_setting())
+    ver = str(request.args.get('ver', 'V10'))
+    return jsonify(setting=YTV.get_mac_ysp_setting(ver))
 
 
 @app.route('/vip/banner')

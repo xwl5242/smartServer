@@ -24,18 +24,18 @@ class YTV:
 
     @staticmethod
     @vip_db
-    def get_mac_ysp_setting(cursor):
-        sql = "select * from mac_ysp_setting where id=1"
-        cursor.execute(sql)
+    def get_mac_ysp_setting(cursor, ver):
+        sql = "select * from mac_ysp_setting where audit_version=%s"
+        cursor.execute(sql, ver)
         return cursor.fetchone()
 
     @staticmethod
     @vip_db
-    def get_mac_ysp_aduit_vods(cursor):
-        sql = "select * from mac_ysp_setting where id=1"
-        cursor.execute(sql)
+    def get_mac_ysp_audit_vods(cursor, ver):
+        sql = "select * from mac_ysp_setting where audit_version=%s"
+        cursor.execute(sql, ver)
         setting = cursor.fetchone()
-        if setting and setting['show_vod_ids']:
+        if setting and setting['show_vod_ids'] and len(setting['show_vod_ids']):
             return setting['show_vod_ids']
         return None
 
@@ -92,12 +92,13 @@ class YTV:
         return total['total'] if total else 0
 
     @staticmethod
-    def get_mv_type_list(mv_type, page_no, page_size):
+    def get_mv_type_list(ver, mv_type, page_no, page_size):
         result = {}
         sub_types = Conf.mv_sub_type().get(mv_type)
-        for sub_type in sub_types:
-            mvs = YTV.get_mv_by_type(sub_type, page_no, page_size)
-            result[sub_type] = mvs
+        if sub_types and len(sub_types) > 0:
+            for sub_type in sub_types:
+                mvs = YTV.get_mv_by_type(ver, sub_type, page_no, page_size)
+                result[sub_type] = mvs
         return result
 
     @staticmethod
@@ -110,8 +111,8 @@ class YTV:
 
     @staticmethod
     @vip_db
-    def get_news(cursor):
-        vod_list = YTV.get_mac_ysp_aduit_vods()
+    def get_news(cursor, ver):
+        vod_list = YTV.get_mac_ysp_audit_vods(ver)
         t_sql = f" and vod_id in ({vod_list}) " if vod_list else ""
         sql = f"select vod_id,type_id,vod_name,vod_pic,vod_actor,vod_director,vod_blurb,vod_remarks," \
               f"vod_area,vod_lang,vod_year,vod_score,vod_score_all,vod_score_num,vod_time,vod_serial from mac_vod " \
@@ -121,10 +122,10 @@ class YTV:
 
     @staticmethod
     @vip_db
-    def get_mv_by_type(cursor, mv_type, page_no, page_size):
+    def get_mv_by_type(cursor, ver, mv_type, page_no, page_size):
         page_no = int(page_no)
         page_size = int(page_size)
-        vod_list = YTV.get_mac_ysp_aduit_vods()
+        vod_list = YTV.get_mac_ysp_audit_vods(ver)
         t_sql = f" and vod_id in ({vod_list}) " if vod_list else ""
         page_no = 0 if vod_list else page_no
         sql = f"select vod_id,type_id,vod_name,vod_pic,vod_actor,vod_director,vod_blurb,vod_remarks," \
@@ -136,8 +137,8 @@ class YTV:
 
     @staticmethod
     @vip_db
-    def get_mv_by_type_count(cursor, mv_type):
-        vod_list = YTV.get_mac_ysp_aduit_vods()
+    def get_mv_by_type_count(cursor, ver, mv_type):
+        vod_list = YTV.get_mac_ysp_audit_vods(ver)
         t_sql = f" and vod_id in ({vod_list}) " if vod_list else ""
         sql = f"select count(1) total from mac_vod where vod_status='1' {t_sql} and type_id not in (11, 21) and type_id={mv_type}"
         cursor.execute(sql)
@@ -146,10 +147,10 @@ class YTV:
 
     @staticmethod
     @vip_db
-    def get_mv_by_dy(cursor, page_no, page_size):
+    def get_mv_by_dy(cursor, ver, page_no, page_size):
         page_no = int(page_no)
         page_size = int(page_size)
-        vod_list = YTV.get_mac_ysp_aduit_vods()
+        vod_list = YTV.get_mac_ysp_audit_vods(ver)
         t_sql = f" and vod_id in ({vod_list}) " if vod_list else ""
         page_no = 0 if vod_list else page_no
         sql = f"select vod_id,type_id,vod_name,vod_pic,vod_actor,vod_director,vod_blurb,vod_remarks," \
@@ -161,10 +162,10 @@ class YTV:
 
     @staticmethod
     @vip_db
-    def get_mv_by_ds(cursor, page_no, page_size):
+    def get_mv_by_ds(cursor, ver, page_no, page_size):
         page_no = int(page_no)
         page_size = int(page_size)
-        vod_list = YTV.get_mac_ysp_aduit_vods()
+        vod_list = YTV.get_mac_ysp_audit_vods(ver)
         t_sql = f" and vod_id in ({vod_list}) " if vod_list else ""
         page_no = 0 if vod_list else page_no
         sql = f"select vod_id,type_id,vod_name,vod_pic,vod_actor,vod_director,vod_blurb,vod_remarks," \
@@ -185,8 +186,8 @@ class YTV:
 
     @staticmethod
     @vip_db
-    def get_mv_by_name(cursor, tv_name):
-        vod_list = YTV.get_mac_ysp_aduit_vods()
+    def get_mv_by_name(cursor, ver, tv_name):
+        vod_list = YTV.get_mac_ysp_audit_vods(ver)
         t_sql = f" and vod_id in ({vod_list}) " if vod_list else ""
         sql = f"select vod_id,type_id,vod_name,vod_pic,vod_actor,vod_director,vod_blurb,vod_remarks," \
               f"vod_area,vod_lang,vod_year,vod_score,vod_score_all,vod_score_num,vod_time,vod_serial from mac_vod " \
