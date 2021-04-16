@@ -209,8 +209,8 @@ def smart_mv_parse():
         v_url = request.args['url']
         v_type = request.args['type']
         v_type = v_type if v_type else 'jh'
-        return MVParse(v_url).parse(v_type)
-    return None, None
+        return jsonify(file_no=file_no, url=url)
+    return jsonify(file_no=None, url=None)
 
 
 @app.route('/smart/music/search/<kw>')
