@@ -172,6 +172,15 @@ def wx_update_menu():
 ##################
 # 智能平台相关请求 #
 ##################
+@app.route('/smart/menus')
+def smart_menus():
+    """
+    菜单
+    :return:
+    """
+    return API.menus()
+
+
 @app.route('/smart/mv/girl')
 def smart_mv_girl():
     """
@@ -282,6 +291,11 @@ def smart_word():
     :return:
     """
     return API.word()
+
+
+@app.route('/smart/xwlzhx20151118/gif/fetch')
+def smart_gif_fetch():
+    Gallery.gif_fetch()
 
 
 @app.route('/smart/gif/<page_no>')

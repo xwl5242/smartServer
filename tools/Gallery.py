@@ -1,25 +1,34 @@
 # -*- coding:utf-8 -*-
 import json
 import requests
-from random import choice, shuffle
+from tools.Smart import Smart
 from config.Config import Conf
+from random import choice, shuffle
 
 
 class Gallery:
 
     @staticmethod
     def gif(page_no):
+        return Smart.gif_query(page_no)
+
+    @staticmethod
+    def gif_fetch():
         key = 'a6919e2c02e0891115be46ef57e3396c'
-        url = f'https://way.jd.com/showapi/dtgxt?page={page_no}&maxResult=20&appkey={key}'
-        resp = requests.get(url, headers={"User-Agent": choice(Conf.UAS)})
-        if resp and resp.text:
-            resp = json.loads(resp.text)
-            if int(resp['code']) == 10000 and resp['result']:
-                resp = resp['result']
-                if resp and resp['showapi_res_body'] and resp['showapi_res_body']['contentlist']:
-                    gif_list = resp['showapi_res_body']['contentlist']
-                    return [{'title': g['title'], 'img': g['img']} for g in gif_list]
-        return None
+        for index in range(1, 3100):
+            url = f'https://way.jd.com/showapi/dtgxt?page={index}&maxResult=20&appkey={key}'
+            resp = requests.get(url, headers={"User-Agent": choice(Conf.UAS)})
+            if resp and resp.text:
+                resp = json.loads(resp.text)
+                if int(resp['code']) == 10000 and resp['result']:
+                    resp = resp['result']
+                    if resp and resp['showapi_res_body'] and resp['showapi_res_body']['contentlist']:
+                        gif_list = resp['showapi_res_body']['contentlist']
+                        if gif_list and len(gif_list) > 0:
+                            for gif in gif_list:
+                                Smart.gif_save(gif['id'], gif['title'], gif['img'])
+                        else:
+                            break
 
     @staticmethod
     def wallpaper_type():

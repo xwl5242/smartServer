@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+import os
 import json
 import random
 import requests
@@ -6,6 +7,12 @@ from config.Config import Conf
 
 
 class API:
+
+    @staticmethod
+    def menus():
+        menus_path = os.path.join(os.path.dirname(__file__), 'menus')
+        with open(menus_path, 'r', encoding='utf-8') as fr:
+            return json.loads(fr.read())
 
     @staticmethod
     def love():
