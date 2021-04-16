@@ -2,9 +2,9 @@
 import json
 import time
 from tools.Chp import CHP
-from youtv.YouTV import YTV
 from tools.Music import Music
 from tools.Smart import Smart
+from tools.GirlMV import GirlMV
 from tools.Gallery import Gallery
 from wechat.WxService import WxService, WxMenuService
 from flask import Flask, request, render_template, jsonify, send_file
@@ -172,47 +172,66 @@ def wx_update_menu():
 ##################
 # 智能平台相关请求 #
 ##################
-@app.route('/smart/dy/parse')
-def smart_dy_parse():
+@app.route('/smart/mv/girl')
+def smart_mv_girl():
     """
-    抖音视频解析
+    随机一个美女视频
     :return:
     """
-    from tools.DY import DouYin
-    if 'url' in request.args and 'douyin.com' in request.args['url']:
+    return GirlMV().one()
+
+
+@app.route('/smart/mv/parse')
+def smart_mv_parse():
+    """
+    视频解析
+    :return:
+    """
+    from tools.MVParse import MVParse
+    if 'url' in request.args:
         v_url = request.args['url']
-        file_id = DouYin.parse(v_url)
-    else:
-        file_id = None
-    return jsonify({"file_id": file_id})
-
-
-@app.route('/smart/dy/medias')
-def smart_dy_medias():
-    import os
-    if 'file_id' in request.args:
-        file_id = request.args['file_id']
-        file_dir = os.path.join(os.path.dirname(__file__), 'tools', 'mv')
-        file_path = os.path.join(file_dir, f'{file_id}.re')
-        with open(file_path, 'r') as f:
-            return jsonify(json.loads(f.read()))
-    else:
-        return jsonify({"error": "请传递file_id"})
+        v_type = request.args['type']
+        v_type = v_type if v_type else 'jh'
+        return MVParse(v_url).parse(v_type)
+    return None, None
 
 
 @app.route('/smart/music/search/<kw>')
 def smart_music_search(kw):
+    """
+    音乐搜索服务
+    :param kw: 音乐名称
+    :return:
+    """
     musics = Music.search(kw)
     return jsonify(musics=musics)
 
 
 @app.route('/smart/music/download/<song_id>')
 def smart_music_download(song_id):
+    """
+    音乐下载服务
+    :param song_id: 音乐id
+    :return:
+    """
     return jsonify(download_url=Music.download(song_id))
+
+
+@app.route('/smart/switch')
+def smart_switch():
+    """
+    系统开关，控制功能开关
+    :return:
+    """
+    return jsonify(switchs=Smart.switchs())
 
 
 @app.route('/smart/switchs')
 def smart_switchs():
+    """
+    系统开关，控制功能开关
+    :return:
+    """
     return jsonify(switchs=Smart.switchs())
 
 
@@ -229,146 +248,36 @@ def smart_gif(page_no):
 
 @app.route('/smart/wallpaper/type')
 def smart_wallpaper_type():
-    if str(Smart.switchs()['music_switch']) == '0':
-        wp_type = Gallery.wallpaper_type()
-        wp_type = [wt for wt in wp_type if str(wt['id']) not in ['6', '30', '36']]
-    else:
-        wp_type = Gallery.wallpaper_type()
+    """
+    精美壁纸类型
+    :return:
+    """
+    wp_type = Gallery.wallpaper_type()
+    wp_type = [wt for wt in wp_type if str(wt['id']) not in ['6', '30', '36']]
     return jsonify(wp_type=wp_type)
 
 
 @app.route('/smart/wallpaper/list/<t>/<page_no>')
 def smart_wallpaper_list(t, page_no):
+    """
+    分页获取精美壁纸
+    :param t: 壁纸类型
+    :param page_no: 页码
+    :return:
+    """
     return jsonify(wps=Gallery.wallpaper_list(t, page_no))
 
 
 @app.route('/smart/suggest/save', methods=['POST'])
 def smart_suggest_save():
+    """
+    留言功能
+    :return:
+    """
     tmp = request.json
     if tmp:
         Smart.suggest_save(tmp['suggest'])
     return jsonify(code=0)
-
-
-####################
-# 莜视频平台相关请求 #
-####################
-top_list = {'l': [], 'e': None}
-# 页面顶部轮播banner
-banner_list = {'l': [], 'e': None}
-
-
-@app.route('/vip/index')
-def index():
-    """
-    首页
-    :return:
-    """
-    ver = str(request.args.get('ver', 'V10'))
-    news = YTV.get_news(ver)
-    dys = YTV.get_mv_by_dy(ver, 2, 9)
-    dss = YTV.get_mv_by_ds(ver, 2, 9)
-    zys = YTV.get_mv_by_type(ver, 3, 2, 9)
-    dms = YTV.get_mv_by_type(ver, 4, 2, 9)
-    mvs = {'dys': dys, 'dss': dss, 'zys': zys, 'dms': dms}
-    total = YTV.get_vod_total()
-    today = YTV.get_vod_update()
-    return jsonify(news=news, mvs=mvs, total=total, today=today)
-
-
-@app.route('/vip/mvtypes')
-def mvtypes():
-    mv_types = YTV.get_mv_type()
-    return jsonify(mv_types=mv_types)
-
-
-@app.route('/vip/mv/type/<mv_type>/<page_no>')
-def mv_type_pageno(mv_type, page_no):
-    ver = str(request.args.get('ver', 'V10'))
-    mvs = YTV.get_mv_type_list(ver, mv_type, page_no, 9)
-    return jsonify(mvs=mvs)
-
-
-@app.route('/vip/mv/subtype/<mv_subtype>/<page_no>')
-def mv_subtype_pageno(mv_subtype, page_no):
-    ver = str(request.args.get('ver', 'V10'))
-    mvs = YTV.get_mv_by_type(ver, mv_subtype, page_no, 9)
-    total = YTV.get_mv_by_type_count(ver, mv_subtype)
-    return jsonify(mvs=mvs, total=total)
-
-
-@app.route('/vip/search/<tv_name>')
-def search(tv_name):
-    """
-    根据视频名称搜索资源
-    :param tv_name: 视频名称
-    :return: 视频mv list
-    """
-    ver = str(request.args.get('ver', 'V10'))
-    return jsonify(mvs=YTV.get_mv_by_name(ver, tv_name))
-
-
-@app.route('/vip/detail/<tv_id>')
-def detail(tv_id):
-    """
-    根据视频id获取视频详情信息
-    :param tv_id: 视频id
-    :return: 视频详情信息
-    """
-    return jsonify(mv=YTV.get_mv_detail(tv_id))
-
-
-@app.route('/vip/switch_status')
-def switch_status():
-    return jsonify(status=YTV.show_share_url())
-
-
-@app.route('/vip/mac_setting')
-def mac_setting():
-    return jsonify(mac_setting=YTV.mac_setting())
-
-
-@app.route('/vip/audit/setting')
-def mac_ysp_setting():
-    ver = str(request.args.get('ver', 'V10'))
-    return jsonify(setting=YTV.get_mac_ysp_setting(ver))
-
-
-@app.route('/vip/banner')
-def banner():
-    """
-    首页顶部轮播图  来自腾讯视频  每2个小时更新
-    :return: banner list
-    """
-    from youtv.YouTV import Banner
-    tp = Banner()
-    expire = banner_list.get('e', None)
-    now = int(time.time() * 1000)
-    if expire and (now < expire - 60 * 1000):
-        pass
-    else:
-        banner_list['e'] = int(now + 7200000)
-        banner_list['l'] = tp.fetch_top()
-    return jsonify(banner_list=banner_list['l'])
-    # return jsonify(banner_list=[])
-
-
-@app.route('/vip/top')
-def top():
-    """
-    百度搜索风云榜 每2个小时更新
-    :return: top list
-    """
-    from youtv.YouTV import Top
-    top = Top()
-    expire = top_list.get('e', None)
-    now = int(time.time() * 1000)
-    if expire and (now < expire - 60 * 1000):
-        pass
-    else:
-        top_list['e'] = now + 7200 * 1000
-        top_list['l'] = top.spider()
-    return jsonify(top_list=top_list['l'])
     
 
 #################
@@ -391,7 +300,6 @@ def quanchonger_update():
     pc = pc_resp.content.decode('utf-8')
     pc = pc[pc.index('<!DOCTYPE html>'):]
     pc = pc[:-5]
-    pc = pc.replace("友情链接#LINK#", f"友情链接 | {YTV.get_quanchonger_link_html()}")
     pc = pc.replace("'); })();", "")
     with open('/usr/src/app/quanchonger/index.html', 'w') as pcw:
         pcw.write(pc)
