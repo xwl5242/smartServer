@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 import json
 import time
-from tools.Chp import CHP
+from tools.API import API
 from tools.Music import Music
 from tools.Smart import Smart
 from tools.GirlMV import GirlMV
@@ -235,13 +235,62 @@ def smart_switchs():
     return jsonify(switchs=Smart.switchs())
 
 
-@app.route('/smart/chp')
-def smart_chp():
-    return CHP.chp()
+@app.route('/smart/love')
+def smart_love():
+    """
+    土味情话
+    :return:
+    """
+    return API.love()
+
+
+@app.route('/smart/garbage/<goods>')
+def smart_garbage(goods):
+    """
+    垃圾分类
+    :param goods: 垃圾名称
+    :return:
+    """
+    return API.garbage(goods)
+
+
+@app.route('/smart/short_url')
+def smart_short_url():
+    """
+    短链接
+    :return:
+    """
+    if 'url' in request.args:
+        url = request.args['url']
+        return API.short_url(url)
+    return None
+
+
+@app.route('/smart/article')
+def smart_article():
+    """
+    每日一文
+    :return:
+    """
+    return API.article()
+
+
+@app.route('/smart/word')
+def smart_word():
+    """
+    每日一言
+    :return:
+    """
+    return API.word()
 
 
 @app.route('/smart/gif/<page_no>')
 def smart_gif(page_no):
+    """
+    动态图
+    :param page_no: 页码
+    :return:
+    """
     page_no = int(page_no) if page_no else 0
     return jsonify(gifs=Gallery.gif(page_no))
 
