@@ -178,7 +178,7 @@ def smart_menus():
     菜单
     :return:
     """
-    return API.menus()
+    return jsonify(menus=API.menus())
 
 
 @app.route('/smart/mv/girl')
@@ -187,7 +187,15 @@ def smart_mv_girl():
     随机一个美女视频
     :return:
     """
-    return GirlMV().one()
+    file_no, url = GirlMV().one()
+    return jsonify(url=url, file_no=file_no)
+
+
+@app.route('/smart/mv/girl/download/<file_no>')
+def smart_mv_girl_download(file_no):
+    import os
+    path = os.path.join(os.path.dirname(__file__), 'tools', 'mv', f'{file_no}.mp4')
+    return send_file(path)
 
 
 @app.route('/smart/mv/parse')
