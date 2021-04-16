@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 import os
 import json
+import uuid
 import random
 import requests
 from config.Config import Conf
@@ -35,7 +36,21 @@ class API:
         if resp and resp.text:
             resp = json.loads(resp.text)
             if resp['code'] == 200:
-                return resp['data']
+                article = resp['data']
+                if article and article['content']:
+                    content = str(article['content'])
+                    if content.find('<p>') == 0:
+                        content = content[3:]
+                    if content.rfind('</p>') == len(content) - 4:
+                        content = content[:-4]
+                    article['content'] = content
+                    file_no = str(uuid.uuid4())
+                    file_path = os.path.join(os.path.dirname(__file__), 'mv', f'{file_no}.txt')
+                    with open(file_path, 'w', encoding='utf-8') as fw:
+                        contents = content.split('</p><p>')
+                        contents = '\n'.join(contents)
+                        fw.write(f'作者：{article["author"]}\n标题：{article["title"]}\n正文：\n{contents}')
+                    return article, file_no
         return None
 
     @staticmethod
@@ -68,5 +83,5 @@ class API:
 
 
 if __name__ == '__main__':
-    print(API.word())
+    print(API.article())
 

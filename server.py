@@ -289,7 +289,18 @@ def smart_article():
     每日一文
     :return:
     """
-    return API.article()
+    article, file_no = API.article()
+    return jsonify(article=article, file_no=file_no)
+
+
+@app.route('/smart/article/download/<file_no>')
+def smart_article_download(file_no):
+    """
+    每日一文下载
+    :return:
+    """
+    import os
+    return send_file(os.path.join(os.path.dirname(__file__), 'tools', 'mv', f'{file_no}.txt'))
 
 
 @app.route('/smart/word')
