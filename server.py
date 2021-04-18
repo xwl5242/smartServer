@@ -354,9 +354,7 @@ def smart_wallpaper_list(t, page_no):
 @app.route('/smart/wallpaper/download')
 def smart_wallpaper_download():
     if 'url' in request.args:
-        file_no = Gallery.wallpaper_download(request.args['url'])
-        file_path = os.path.join(os.path.dirname(__file__), 'tools', 'mv', file_no)
-        return send_file(file_path)
+        return Gallery.wallpaper_download(request.args['url'])
     return None
 
 

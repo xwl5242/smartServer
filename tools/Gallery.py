@@ -76,8 +76,9 @@ class Gallery:
         resp = requests.get(url, headers={"User-Agent": choice(Conf.UAS)})
         if resp and resp.content:
             import os, uuid
-            file_no = os.path.join(os.path.dirname(__file__), 'mv', f'{str(uuid.uuid4())}.png')
-            with open(file_no, 'wb') as f:
+            file_no = str(uuid.uuid4())
+            file_path = os.path.join(os.path.dirname(__file__), 'mv', f'{file_no}.png')
+            with open(file_path, 'wb') as f:
                 f.write(resp.content)
             return file_no
         return None
