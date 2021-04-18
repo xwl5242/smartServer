@@ -22,7 +22,7 @@ class Smart:
     @staticmethod
     @db
     def gif_query(cursor, page_no):
-        sql = f"select * from ysoft_gif limit {page_no}, {(page_no+1) * 10}"
+        sql = f"select * from ysoft_gif limit {page_no * 10}, {10}"
         cursor.execute(sql)
         return cursor.fetchall()
 

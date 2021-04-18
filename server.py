@@ -350,6 +350,13 @@ def smart_wallpaper_list(t, page_no):
     return jsonify(wps=Gallery.wallpaper_list(t, page_no))
 
 
+@app.route('/smart/wallpaper/download')
+def smart_wallpaper_download():
+    if 'url' in request.args:
+        return Gallery.wallpaper_download(request.args['url'])
+    return None
+
+
 @app.route('/smart/suggest/save', methods=['POST'])
 def smart_suggest_save():
     """

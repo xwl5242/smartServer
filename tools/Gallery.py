@@ -71,6 +71,17 @@ class Gallery:
                 return result
         return []
 
+    @staticmethod
+    def wallpaper_download(url):
+        resp = requests.get(url, headers={"User-Agent": choice(Conf.UAS)})
+        if resp and resp.content:
+            import os, uuid
+            file_no = os.path.join(os.path.dirname(__file__), 'mv', f'{str(uuid.uuid4())}.png')
+            with open(file_no, 'wb') as f:
+                f.write(resp.content)
+            return file_no
+        return None
+
 
 if __name__ == '__main__':
     print(Gallery.gif(1))
