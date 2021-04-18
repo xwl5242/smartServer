@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+import os
 import json
 import time
 from tools.API import API
@@ -353,7 +354,9 @@ def smart_wallpaper_list(t, page_no):
 @app.route('/smart/wallpaper/download')
 def smart_wallpaper_download():
     if 'url' in request.args:
-        return Gallery.wallpaper_download(request.args['url'])
+        file_no = Gallery.wallpaper_download(request.args['url'])
+        file_path = os.path.join(os.path.dirname(__file__), 'tools', 'mv', f'{file_no}.png')
+        return send_file(file_path)
     return None
 
 
