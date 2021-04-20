@@ -16,6 +16,12 @@ class API:
             return json.loads(fr.read())
 
     @staticmethod
+    def menus_ver(ver):
+        menus_path = os.path.join(os.path.dirname(__file__), f'menus_{ver}')
+        with open(menus_path, 'r', encoding='utf-8') as fr:
+            return json.loads(fr.read())
+
+    @staticmethod
     def love():
         return API._req_free('https://v1.alapi.cn/api/qinghua', 'content')
 

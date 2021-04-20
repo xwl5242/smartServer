@@ -35,8 +35,8 @@ class Smart:
 
     @staticmethod
     @db
-    def switchs(cursor, ver):
-        sql = f"select * from ysoft_switch where ver={ver}"
+    def switch_ver(cursor, ver):
+        sql = f"select * from ysoft_switch where ver='{ver}'"
         cursor.execute(sql)
         return cursor.fetchone()
 

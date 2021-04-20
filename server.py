@@ -179,6 +179,9 @@ def smart_menus():
     菜单
     :return:
     """
+    if 'ver' in request.args:
+        ver = request.args['ver']
+        return jsonify(menus=API.menus_ver(ver))
     return jsonify(menus=API.menus())
 
 
@@ -252,7 +255,7 @@ def smart_switch_ver(ver):
     :param ver:
     :return:
     """
-    return jsonify(switchs=Smart.switchs(ver))
+    return jsonify(switchs=Smart.switch_ver(ver))
 
 
 @app.route('/smart/love')
