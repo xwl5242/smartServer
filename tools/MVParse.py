@@ -16,10 +16,11 @@ class MVParse:
         各平台小视频解析
         """
         self.url = url
+        self.token = '4hqbAKVFUAh6mgXy'
         self.m_key = 'important-151118'
         self.ppx = 'https://v1.alapi.cn/api/video/ppx?url='
         self.dy = 'https://v1.alapi.cn/api/video/dy?url='
-        self.jh = 'https://v1.alapi.cn/api/video/jh?url='
+        self.jh = 'https://v2.alapi.cn/api/video/url?url='
 
     def parse(self, mv_type):
         file_no = Nu.aes_encrypt(self.m_key, self.url)
@@ -41,7 +42,7 @@ class MVParse:
             with open(file_re_path, 'r') as r:
                 c_url = r.read()
             return file_no, c_url
-        return None
+        return None, None
 
     def _parse(self, mv_type):
         if mv_type == 'ppx':
@@ -76,7 +77,8 @@ class MVParse:
         return None
 
     def jh_parse(self):
-        resp = requests.get(self.jh + self.url, headers={'User-Agent': random.choice(Conf.UAS)})
+        resp = requests.get(self.jh + self.url + '&token=4hqbAKVFUAh6mgXy', headers={'User-Agent': random.choice(Conf.UAS)})
+        print(resp.text)
         if resp and resp.text:
             resp = json.loads(resp.text)
             if resp['code'] == 200:
@@ -101,6 +103,6 @@ class DouYin:
 
 
 if __name__ == '__main__':
-    print(MVParse('https://h5.pipix.com/s/uW4KXh/').parse('ppx'))
+    print(MVParse('https://h5.pipix.com/s/uW4KXh/').parse('jh'))
 
 

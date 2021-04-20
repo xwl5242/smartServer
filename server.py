@@ -210,6 +210,7 @@ def smart_mv_parse():
         v_url = request.args['url']
         v_type = request.args['type']
         v_type = v_type if v_type else 'jh'
+        file_no, url = MVParse(v_url).parse(v_type)
         return jsonify(file_no=file_no, url=url)
     return jsonify(file_no=None, url=None)
 
@@ -244,13 +245,14 @@ def smart_switch():
     return jsonify(switchs=Smart.switchs())
 
 
-@app.route('/smart/switchs')
-def smart_switchs():
+@app.route('/smart/switch/<ver>')
+def smart_switch_ver(ver):
     """
-    系统开关，控制功能开关
+    系统开关，根据版本查询对应的控制开关
+    :param ver:
     :return:
     """
-    return jsonify(switchs=Smart.switchs())
+    return jsonify(switchs=Smart.switchs(ver))
 
 
 @app.route('/smart/love')
@@ -338,6 +340,18 @@ def smart_wallpaper_type():
     wp_type = Gallery.wallpaper_type()
     wp_type = [wt for wt in wp_type if str(wt['id']) not in ['6', '30', '36']]
     return jsonify(wp_type=wp_type)
+
+
+@app.route('/smart/xwlzhx20151118/tools/mv/clear')
+def tools_mv_clear():
+    """
+    清空tools/mv
+    :return:
+    """
+    path = os.path.join(os.path.dirname(__file__), 'tools', 'mv')
+    for p in os.listdir(path):
+        os.remove(os.path.join(path, p))
+    return 'ok!'
 
 
 @app.route('/smart/wallpaper/list/<t>/<page_no>')
