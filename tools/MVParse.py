@@ -36,8 +36,8 @@ class MVParse:
                     with open(file_path, 'wb') as fb:
                         fb.write(resp.content)
                     with open(file_re_path, 'w') as fw:
-                        fw.write(c_url)
-                    return file_no, c_url
+                        fw.write(v_url)
+                    return file_no, v_url
         else:
             with open(file_re_path, 'r') as r:
                 c_url = r.read()
