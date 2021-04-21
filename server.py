@@ -7,6 +7,7 @@ from tools.Music import Music
 from tools.Smart import Smart
 from tools.GirlMV import GirlMV
 from tools.Gallery import Gallery
+from util.NeteaseUtil import NeteaseUtil
 from wechat.WxService import WxService, WxMenuService
 from flask import Flask, request, render_template, jsonify, send_file
 
@@ -385,6 +386,45 @@ def smart_suggest_save():
     if tmp:
         Smart.suggest_save(tmp['suggest'])
     return jsonify(code=0)
+
+
+PROXY_SERVER_CONFIG = 'Xr2eprEZhsfMmdBZ3t1VGm1sCNrPTupaUS31gXut/RyXNu0itNuqzztRXtZ+ahOimiupARcH8xwdvQdGQT' \
+                      'Qt3SNpCM2QJctaWs3y+AnW4JXkhf1Rt/jHvS4Gd52On5ikjjVRaLW/aVjcS3USO/WFuIoClgwiMaHWdY44' \
+                      'eVyJCVs0MiJlHF3wfKvGH2ioUnGIZkPv3QjsB7xESZ5VZ6OzfKOZf/xQ5z/KkK2J6X3XyLhrgWuoxLPPAr' \
+                      'sFMLNCUwXkSmuQnKkfny2H/v1Aq10YKiGt7VO4iT2rzqSawjLOYA0GnrxLFKobImJR0f0XUf7SBokt5dMO' \
+                      'gqae4kt7bFs0KcjuaA10zjfQLtG8AAPu3Hkg33bqDFfs8kq0+Px8vX19jgymSX2PYn/BefVNdHE/fuvxCL' \
+                      'cniwfL2IPqI4ab81jbjNRUgmaokzDy45c6aAFgopE3RSgpxNJSBAwKRgWXiOgqcWZEI+eVHHtXAEO/cSlZ' \
+                      '9mkCM6MDc8R0aOvdeM234syf/E9wRgxwJYJzFhhX/jyJYDFK2mqW4yko67o/d50jdFfC1mUShssW3xDr+F' \
+                      'uxjhj70fD7a9pkS6DY8aPA0XOgVVwHbjDHQ8P4kzHQa+my+3qhKHOrpu/gwsREa2IAMdsUM5ig8+fbrKXD' \
+                      '+bI+02WnSZzPG9030tImxrXAM4/zy0fXGT2LHT6MTbJWz1sPyaGHk/wTjISGRpuw595RZjVrOZh1h14hd6' \
+                      'dm7KdcnUeZsf4uUnVGr4kPhSRCCuLyp1PnWrer8/Gg6iUpVU/BcdRBaNDR3JeM4ISP8pgemrNahGBN6pUw' \
+                      'nQie28x048IJVYrHSEZnpWnt7Cc2VaTLF1DIpD//63eWhywI8Q0AhIsDgbmtWrt6wrqGkk31tNBE0kT2Z1' \
+                      'JkhFwLZk/JKbPkQhdZtnCmaLA+ihAxtUxwI6EwvcS9krNWm7nnxjv+vWbiA6Y3hLTfDKvN6O/cF6P7z5E2' \
+                      '7pqGSB0SBmRkF/9qekqodf/fKD7CDnLRHMlR7W4sU5233w5HM8ihep7HYCqLjxKkqZUpLXNyN+e27mYquc' \
+                      'WrRb9IVhu760VTXUCn161y'
+
+
+@app.route('/smart/xwlzhx20151118/proxy/server/url/list')
+def smart_proxy_server_url_list():
+    return jsonify(urls=['加拿大', '加拿大1', '美国', '美国东部', '美国西部', '法国', '德国', '日本',
+                         '东京', '新加坡', '英国', '英国1', '荷兰', '香港', '密克罗尼西亚1', '密克罗尼西亚2'])
+
+
+@app.route('/smart/xwlzhx20151118/proxy/server/pac')
+def smart_proxy_server_pac():
+    if 'u' in request.args:
+        config = json.loads(NeteaseUtil.aes_decrypt('xwlzhx2015111821', PROXY_SERVER_CONFIG))
+        return "var FindProxyForURL = function(url, host){var blackList = new Array('192.168.*','127.0.0.1'," \
+               "'134.209.63.251','astarvpn.center','*.douyu.com','154.17.5.226','51.79.17.3','154.17.5.226'," \
+               "'51.83.141.81','51.178.130.187','51.89.192.130','51.195.5.186','51.81.93.81','51.89.233.86','51.79.21.9'," \
+               "'51.75.54.187','64.227.111.121','51.91.128.35','51.89.20.176','206.189.143.159','149.28.221.137'," \
+               "'51.81.245.164','128.199.171.254','64.227.75.168','172.105.162.185','*.alipay.com','*.alipayobjects.com'," \
+               "'*.alicdn.com','*.payssion.com','*.95516.com','154.17.19.107','167.99.92.16','172.104.97.56','66.42.42.141'," \
+               "'194.169.181.190','156.146.35.139','159.89.0.33','23.224.68.58','165.227.42.38','154.17.4.126'," \
+               "'51.89.20.176	','135.125.190.230	','154.17.9.217','172.105.173.146','89.187.160.187','mapi.yuansfer.com'," \
+               "'154.17.3.3','154.17.6.239');for(var i = 0;i < blackList.length;i++){if(shExpMatch(host,blackList[i]))" \
+               "return 'DIRECT';} return 'HTTPS " + str(config.get(request.args['u'])) + "';}"
+    return None
     
 
 #################
