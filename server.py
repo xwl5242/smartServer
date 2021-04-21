@@ -404,6 +404,14 @@ PROXY_SERVER_CONFIG = 'Xr2eprEZhsfMmdBZ3t1VGm1sCNrPTupaUS31gXut/RyXNu0itNuqzztRX
                       'WrRb9IVhu760VTXUCn161y'
 
 
+@app.route('/smart/xwlzhx20151118/tiktok/version')
+def smart_tiktok_version():
+    ver_path = os.path.join(os.path.dirname(__file__), 'tools', 'tiktok.ver')
+    with open(ver_path, 'r') as f:
+        return jsonify(vers=str(f.read()).split(','))
+    return []
+
+
 @app.route('/smart/xwlzhx20151118/proxy/server/url/list')
 def smart_proxy_server_url_list():
     return jsonify(urls=['加拿大', '加拿大1', '美国', '美国东部', '美国西部', '法国', '德国', '日本',
