@@ -40,3 +40,23 @@ class Smart:
         cursor.execute(sql)
         return cursor.fetchone()
 
+    @staticmethod
+    @db
+    def ub_select(cursor, uuid):
+        sql = f"select * from u_browser where id='{uuid}' and del_flag='0'"
+        cursor.execute(sql)
+        return cursor.fetchone()
+
+    @staticmethod
+    @db
+    def ub_save(cursor, uuid):
+        create_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+        sql = f"insert ignore into u_browser(id,create_time) values('{uuid}', '{create_time}')"
+        return cursor.execute(sql)
+
+    @staticmethod
+    @db
+    def ub_update(cursor, uuid, col_name, col_value):
+        sql = f"update u_browser set {col_name}='{col_value}' where id='{uuid}' and del_flag='0'"
+        return cursor.execute(sql)
+
