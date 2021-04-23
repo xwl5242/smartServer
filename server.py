@@ -405,6 +405,12 @@ PAC_PROXY_URL = {
 #############
 # u browser #
 #############
+@app.route('/ytb/update')
+def ytb_update():
+    # 'https://smart.quanchonger.com@@@1'
+    return None
+
+
 @app.route('/ub/proxy/url')
 def ub_proxy_url():
     return jsonify(url={
