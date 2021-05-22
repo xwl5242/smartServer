@@ -2,7 +2,9 @@
 import os
 import json
 import time
+import functools
 from tools.API import API
+from youtv.YouTV import YTV
 from tools.Music import Music
 from tools.Smart import Smart
 from tools.GirlMV import GirlMV
@@ -520,6 +522,137 @@ def quanchonger_update():
     with open('/usr/src/app/quanchonger/h5.html', 'w') as h5w:
         h5w.write(wap)
     return jsonify(pc=len(pc), wap=len(wap))
+
+
+##################
+# 莜视频平台相关请求 #
+##################
+top_list = {'l': [], 'e': None}
+# 页面顶部轮播banner
+banner_list = {'l': [], 'e': None}
+
+
+def smart_mv(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        ver = request.args['ver']
+        return func(ver, *args, **kwargs)
+    return wrapper
+
+
+@app.route('/vip/index')
+@smart_mv
+def index(ver):
+    """
+    首页
+    :return:
+    """
+    news = YTV.get_news(ver)
+    dys = YTV.get_mv_by_dy(2, 9, ver)
+    dss = YTV.get_mv_by_ds(2, 9, ver)
+    zys = YTV.get_mv_by_type(3, 2, 9, ver)
+    dms = YTV.get_mv_by_type(4, 2, 9, ver)
+    mvs = {'dys': dys, 'dss': dss, 'zys': zys, 'dms': dms}
+    total = YTV.get_vod_total()
+    today = YTV.get_vod_update()
+    return jsonify(news=news, mvs=mvs, total=total, today=today)
+
+
+@app.route('/vip/mvtypes')
+def mv_types():
+    mv_types = YTV.get_mv_type()
+    return jsonify(mv_types=mv_types)
+
+
+@app.route('/vip/mv/type/<mv_type>/<page_no>')
+def mv_type_list(mv_type, page_no):
+    mvs = YTV.get_mv_type_list(mv_type, page_no, 9)
+    return jsonify(mvs=mvs)
+
+
+@app.route('/vip/mv/subtype/<mv_subtype>/<page_no>')
+@smart_mv
+def mv_subtype_list(ver, mv_subtype, page_no):
+    mvs = YTV.get_mv_by_type(mv_subtype, page_no, 9, ver)
+    total = YTV.get_mv_by_type_count(mv_subtype)
+    return jsonify(mvs=mvs, total=total)
+
+
+@app.route('/vip/search/<tv_name>')
+@smart_mv
+def search(ver, tv_name):
+    """
+    根据视频名称搜索资源
+    :param tv_name: 视频名称
+    :return: 视频mv list
+    """
+    return jsonify(mvs=YTV.get_mv_by_name(tv_name, ver))
+
+
+@app.route('/vip/detail/<tv_id>')
+@smart_mv
+def detail(ver, tv_id):
+    """
+    根据视频id获取视频详情信息
+    :param tv_id: 视频id
+    :return: 视频详情信息
+    """
+    return jsonify(mv=YTV.get_mv_detail(tv_id, ver))
+
+
+@app.route('/vip/get/real/url/<vid>')
+def get_real_url(vid):
+    """
+    获取真实的视频播放地址
+    :param vid:
+    :return:
+    """
+    from youtv.YouTV import LeDuoParse
+    return jsonify(url=LeDuoParse.parse(vid))
+
+
+@app.route('/vip/banner')
+def banner():
+    """
+    首页顶部轮播图  来自腾讯视频  每2个小时更新
+    :return: banner list
+    """
+    from youtv.YouTV import Banner
+    tp = Banner()
+    expire = banner_list.get('e', None)
+    now = int(time.time() * 1000)
+    if expire and (now < expire - 60 * 1000):
+        pass
+    else:
+        banner_list['e'] = int(now + 7200000)
+        banner_list['l'] = tp.fetch_top()
+    return jsonify(banner_list=banner_list['l'])
+    # return jsonify(banner_list=[])
+
+
+@app.route('/vip/top')
+def top():
+    """
+    百度搜索风云榜 每2个小时更新
+    :return: top list
+    """
+    from youtv.YouTV import Top
+    top = Top()
+    expire = top_list.get('e', None)
+    now = int(time.time() * 1000)
+    if expire and (now < expire - 60 * 1000):
+        pass
+    else:
+        print('---调用top---')
+        top_list['e'] = now + 2 * 60 * 60 * 1000
+        top_list['l'] = top.spider()
+    return jsonify(top_list=top_list['l'])
+
+
+@app.route('/vip/settings')
+@smart_mv
+def settings(ver):
+    return jsonify(settings=YTV.get_settings(ver))
 
 
 if __name__ == '__main__':
