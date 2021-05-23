@@ -105,6 +105,22 @@ class NeteaseUtil:
         return result
 
     @staticmethod
+    def aes_decrypt_all(key, iv, content):
+        key_bytes = bytes(key, encoding='utf-8')
+        # iv = key_bytes
+        iv = bytes(iv, encoding='utf-8')
+        cipher = AES.new(key_bytes, AES.MODE_CBC, iv)
+        # base64解码iv
+        encrypt_bytes = base64.b64decode(content)
+        # 解密
+        decrypt_bytes = cipher.decrypt(encrypt_bytes)
+        # 重新编码
+        result = str(decrypt_bytes, encoding='utf-8')
+        # 去除填充内容
+        result = NeteaseUtil.pkcs7unpadding(result)
+        return result
+
+    @staticmethod
     def get_random_key(n):
         """
         获取密钥 n 密钥长度

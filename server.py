@@ -565,8 +565,9 @@ def mv_types():
 
 
 @app.route('/vip/mv/type/<mv_type>/<page_no>')
-def mv_type_list(mv_type, page_no):
-    mvs = YTV.get_mv_type_list(mv_type, page_no, 9)
+@smart_mv
+def mv_type_list(ver, mv_type, page_no):
+    mvs = YTV.get_mv_type_list(mv_type, page_no, 9, ver)
     return jsonify(mvs=mvs)
 
 
@@ -598,6 +599,13 @@ def detail(ver, tv_id):
     :return: 视频详情信息
     """
     return jsonify(mv=YTV.get_mv_detail(tv_id, ver))
+
+
+@app.route('/vip/vip_parse')
+def vip_parse():
+    from youtv.YouTV import VIPParse
+    url = request.args['url']
+    return jsonify(url=VIPParse.parse(url))
 
 
 @app.route('/vip/get/real/url/<vid>')

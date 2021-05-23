@@ -53,11 +53,11 @@ class YTV:
         return total['total'] if total else 0
 
     @staticmethod
-    def get_mv_type_list(mv_type, page_no, page_size):
+    def get_mv_type_list(mv_type, page_no, page_size, ver):
         result = {}
         sub_types = Conf.mv_sub_type().get(mv_type)
         for sub_type in sub_types:
-            mvs = YTV.get_mv_by_type(sub_type, page_no, page_size)
+            mvs = YTV.get_mv_by_type(sub_type, page_no, page_size, ver)
             result[sub_type] = mvs
         return result
 
@@ -146,6 +146,31 @@ class YTV:
         id_list = "','".join(str(mv['show_vods']).split(','))
         where = '' if mv['status'] == '1' else f" and vod_id in('{id_list}')"
         return query.replace('where', f' where 1=1 {where} and ')
+
+
+class VIPParse:
+    @staticmethod
+    def parse(url):
+        parse_url = f"https://www.cuan.la/m3u8.php?url={url}"
+        resp = requests.get(parse_url, headers={
+            'User-Agent': 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0;'
+        })
+        if resp and resp.text:
+            resp = resp.text
+            token_index = resp.find('var bt_token = ') + len('var bt_token = ') + 1
+            if token_index > 0:
+                token_end_index = resp.find('"', token_index)
+                token = resp[token_index: token_end_index]
+                script_index = resp.find('var config = ') + len('var config= ')
+                script_end_index = resp.find('lele.start()', script_index)
+                script_config = resp[script_index: script_end_index]
+                url_index = script_config.find('"url":') + len('"url":') + 1
+                url_end_index = script_config.find('"', url_index)
+                url = script_config[url_index: url_end_index]
+                if token and len(token) == 16 and url:
+                    from util.NeteaseUtil import NeteaseUtil
+                    return NeteaseUtil.aes_decrypt_all('dvyYRQlnPRCMdQSe', token, url)
+        return None
 
 
 class LeDuoParse:
