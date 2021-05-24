@@ -30,7 +30,7 @@ class MsgReply:
             tv = tv if tv else None
             tv = json.loads(tv.content.decode('utf-8'))
             if len(tv['mvs']) > 0:
-                tv = f"http://xwlzhx20151118.quanchonger.com/index.php/" \
+                tv = f"http://book.quanchonger.com/index.php/" \
                     f"vod/search.html?wd={requests.utils.quote(wx_key_word)}"
                 WxService.save_smart_search(wx_id, wx_key_word, '0', save_time, wx_msg_id, tv)
         # 查询优惠券信息

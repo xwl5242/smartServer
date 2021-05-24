@@ -4,6 +4,7 @@ import base64
 import random
 import codecs
 # pip3 install -i https://pypi.douban.com/simple pycryptodome
+# 直接通过whl文件安装，文件https://pypi.org/project/pycryptodome/3.9.0/#files (阿里云盘中也存储了)
 from Crypto.Cipher import AES
 from Crypto.Cipher import ARC4
 from config.Config import Conf
@@ -102,6 +103,19 @@ class NeteaseUtil:
         result = str(decrypt_bytes, encoding='utf-8')
         # 去除填充内容
         result = NeteaseUtil.pkcs7unpadding(result)
+        return result
+
+    @staticmethod
+    def aes_encrypt_all(key, iv, content):
+        key_bytes = bytes(key, encoding='utf-8')
+        iv = bytes(iv, encoding='utf-8')
+        cipher = AES.new(key_bytes, AES.MODE_CBC, iv)
+        # 处理明文
+        content_padding = NeteaseUtil.pkcs7padding(content)
+        # 加密
+        encrypt_bytes = cipher.encrypt(bytes(content_padding, encoding='utf-8'))
+        # 重新编码
+        result = str(base64.b64encode(encrypt_bytes), encoding='utf-8')
         return result
 
     @staticmethod
