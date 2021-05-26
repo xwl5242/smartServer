@@ -651,10 +651,9 @@ def top():
     if expire and (now < expire - 60 * 1000):
         pass
     else:
-        print('---调用top---')
         top_list['e'] = now + 2 * 60 * 60 * 1000
         top_list['l'] = top.spider()
-    return jsonify(top_list=top_list['l'])
+    return jsonify(top_list=top_list['l'][:6])
 
 
 @app.route('/vip/settings')

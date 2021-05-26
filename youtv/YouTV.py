@@ -72,10 +72,31 @@ class YTV:
     @staticmethod
     @vip_db
     def get_news(cursor, ver):
-        sql = f"select {YTV.SQL} from mac_vod " \
-              f"where vod_status='1' and type_id not in (11, 21) order by vod_time_add desc limit 0,9"
-        cursor.execute(YTV.get_real_sql(cursor, ver, sql))
-        return cursor.fetchall()
+        mv_list = []
+        top_list = Top().spider()
+        # top_list = ['奔跑吧 第五季']
+        for top in top_list:
+            if str(top).find(' ') > 0:
+                tt = top.split(' ')[0]
+                tt1 = top.split(' ')[1]
+            elif str(top).find('·') > 0:
+                tt = top.split('·')[0]
+                tt1 = top.split('·')[1]
+            else:
+                tt = top
+                tt1 = top
+            sql = f"select {YTV.SQL} from mac_vod " \
+                  f"where vod_status='1' and type_id not in (11, 21) and " \
+                f"vod_name like '{tt}%' order by vod_time_add desc limit 0,9"
+            cursor.execute(YTV.get_real_sql(cursor, ver, sql))
+            mvs = cursor.fetchall()
+            if mvs and len(mvs) > 1:
+                for mv in mvs:
+                    if str(mv['vod_name']).find(tt1) > 0:
+                        mv_list.append(mv)
+            else:
+                mv_list.extend(mvs)
+        return mv_list
 
     @staticmethod
     @vip_db
@@ -239,4 +260,4 @@ class Top:
         r = requests.get(self.index_url, headers={'User-Agent': random.choice(Conf.UAS)})
         text = r.content.decode('utf-8')
         root = etree.HTML(text)
-        return root.xpath(self.name_xpath)[:5]
+        return root.xpath(self.name_xpath)[:9]
