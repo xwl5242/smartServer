@@ -76,15 +76,9 @@ class YTV:
         top_list = Top().spider()
         # top_list = ['奔跑吧 第五季']
         for top in top_list:
-            if str(top).find(' ') > 0:
-                tt = top.split(' ')[0]
-                tt1 = top.split(' ')[1]
-            elif str(top).find('·') > 0:
-                tt = top.split('·')[0]
-                tt1 = top.split('·')[1]
-            else:
-                tt = top
-                tt1 = top
+            tt, tt1 = YTV._get_top(top, ' ')
+            if tt == top:
+                tt, tt1 = YTV._get_top(top, '·')
             sql = f"select {YTV.SQL} from mac_vod " \
                   f"where vod_status='1' and type_id not in (11, 21) and " \
                 f"vod_name like '{tt}%' order by vod_time_add desc limit 0,9"
@@ -92,11 +86,29 @@ class YTV:
             mvs = cursor.fetchall()
             if mvs and len(mvs) > 1:
                 for mv in mvs:
-                    if str(mv['vod_name']).find(tt1) > 0:
+                    if str(mv['vod_name']).find(tt1) > 0 or str(mv['vod_name']).find(YTV._num_replace(tt1)) > 0:
                         mv_list.append(mv)
             else:
                 mv_list.extend(mvs)
+        import random
+        random.shuffle(mv_list)
         return mv_list
+
+    @staticmethod
+    def _get_top(top, sep):
+        if str(top).find(sep) > 0:
+            tmp = str(top).split(sep)
+            return tmp[0], tmp[1]
+        return top, top
+
+    @staticmethod
+    def _num_replace(string):
+        num_arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        string_arr = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十']
+        for num in num_arr:
+            if str(string).find(str(num)) >= 0:
+                return string.replace(str(num), string_arr[num_arr.index(num)])
+        return string
 
     @staticmethod
     @vip_db
