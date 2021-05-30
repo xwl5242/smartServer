@@ -619,6 +619,13 @@ def get_real_url(vid):
     return jsonify(url=LeDuoParse.parse(vid))
 
 
+@app.route('/vip/test/test')
+def test_test():
+    import requests
+    resp = requests.get('https://jsap.attakids.com/?url=https://v.qq.com/x/cover/mzc0020007q9shb.html')
+    return jsonify(xx=resp.text)
+
+
 @app.route('/vip/banner')
 def banner():
     """
@@ -660,6 +667,12 @@ def top():
 @smart_mv
 def settings(ver):
     return jsonify(settings=YTV.get_settings(ver))
+
+
+@app.route('/vip/active/<ver>')
+def ver_active(ver):
+    YTV.ver_active(ver)
+    return jsonify(msg='ok')
 
 
 if __name__ == '__main__':

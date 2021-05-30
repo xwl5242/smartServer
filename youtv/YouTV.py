@@ -72,27 +72,34 @@ class YTV:
     @staticmethod
     @vip_db
     def get_news(cursor, ver):
-        mv_list = []
-        top_list = Top().spider()
-        # top_list = ['奔跑吧 第五季']
-        for top in top_list:
-            tt, tt1 = YTV._get_top(top, ' ')
-            if tt == top:
-                tt, tt1 = YTV._get_top(top, '·')
+        settings = YTV.get_settings(ver)
+        if settings['status'] == '1':
+            mv_list = []
+            top_list = Top().spider()
+            # top_list = ['奔跑吧 第五季']
+            for top in top_list:
+                tt, tt1 = YTV._get_top(top, ' ')
+                if tt == top:
+                    tt, tt1 = YTV._get_top(top, '·')
+                sql = f"select {YTV.SQL} from mac_vod " \
+                      f"where vod_status='1' and type_id not in (11, 21) and " \
+                    f"vod_name like '{tt}%' order by vod_time_add desc limit 0,9"
+                cursor.execute(YTV.get_real_sql(cursor, ver, sql))
+                mvs = cursor.fetchall()
+                if mvs and len(mvs) > 1:
+                    for mv in mvs:
+                        if str(mv['vod_name']).find(tt1) > 0 or str(mv['vod_name']).find(YTV._num_replace(tt1)) > 0:
+                            mv_list.append(mv)
+                else:
+                    mv_list.extend(mvs)
+            import random
+            random.shuffle(mv_list)
+            return mv_list
+        else:
             sql = f"select {YTV.SQL} from mac_vod " \
-                  f"where vod_status='1' and type_id not in (11, 21) and " \
-                f"vod_name like '{tt}%' order by vod_time_add desc limit 0,9"
+                f"where vod_status='1' and type_id not in (11, 21) order by vod_time_add desc limit 0,9"
             cursor.execute(YTV.get_real_sql(cursor, ver, sql))
-            mvs = cursor.fetchall()
-            if mvs and len(mvs) > 1:
-                for mv in mvs:
-                    if str(mv['vod_name']).find(tt1) > 0 or str(mv['vod_name']).find(YTV._num_replace(tt1)) > 0:
-                        mv_list.append(mv)
-            else:
-                mv_list.extend(mvs)
-        import random
-        random.shuffle(mv_list)
-        return mv_list
+            return cursor.fetchall()
 
     @staticmethod
     def _get_top(top, sep):
@@ -170,6 +177,12 @@ class YTV:
         sql = f"select * from mac_settings where version='{ver}'"
         cursor.execute(sql)
         return cursor.fetchone()
+
+    @staticmethod
+    @vip_db
+    def ver_active(cursor, ver):
+        sql = f"update mac_settings set status='1',parse_enable='1' where version='{ver}'"
+        return cursor.execute(sql)
 
     @staticmethod
     def get_real_sql(cursor, ver, query):
