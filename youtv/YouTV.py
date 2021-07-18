@@ -6,6 +6,7 @@ import requests
 from lxml import etree
 from config.DB import vip_db
 from config.Config import Conf
+from urllib.parse import unquote
 
 
 class YTV:
@@ -68,6 +69,12 @@ class YTV:
               "and type_id not in (11, 21) and type_mid='1'"
         cursor.execute(sql)
         return cursor.fetchall()
+
+    @staticmethod
+    @vip_db
+    def save_suggest(cursor,  suggest):
+        sql = f"insert into mac_suggest(suggest) values ('{suggest}')"
+        cursor.execute(sql)
 
     @staticmethod
     @vip_db
@@ -229,14 +236,21 @@ class LeDuoParse:
         if resp and resp.content:
             resp = resp.content.decode('utf-8')
             if resp:
-                url_flag = 'leduoplayer/index.php?url='
+                url_flag = 'leduoplayer/index.php?'
                 script_index = resp.rfind('<script type="text/javascript">')
                 start_index = resp.find(url_flag, script_index) + len(url_flag)
                 end_index = resp.find('var u = navigator.userAgent;', start_index)
                 mv_url = resp[start_index: end_index]
                 if mv_url:
+                    if 'type=urlencode' in mv_url or 'url=' in mv_url:
+                        t_index = mv_url.find('url=')
+                        mv_url = mv_url[t_index+4:]
+                        if 'type=urlencode' in mv_url:
+                            mv_url = mv_url.replace('type=urlencode', '').replace('&', '')
+                        mv_url = unquote(mv_url)
                     return mv_url.replace(' ', '').replace("'", '')\
-                        .replace(';', '').replace('\r', '').replace('\n', '').replace('\t', '')
+                        .replace(';', '').replace('\r', '').replace('\n', '')\
+                        .replace('\t', '').replace('&next=varnext=', '')
         return None
 
 
@@ -286,3 +300,7 @@ class Top:
         text = r.content.decode('utf-8')
         root = etree.HTML(text)
         return root.xpath(self.name_xpath)[:9]
+
+
+if __name__ == '__main__':
+    print(LeDuoParse.parse('XMMTUzNzA2MDAwMF8x'))

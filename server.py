@@ -149,18 +149,18 @@ def wx_update_menu():
                 "name": "优惠商城",
                 "url": "https://www.quanchonger.com"
             },
-            # {
-            #     "type": "view",
-            #     "name": "小汪影视",
-            #     "url": "http://xwlzhx20151118.quanchonger.com"
-            # }
             {
-                "type": "miniprogram",
+                "type": "view",
                 "name": "小汪影视",
-                "url": "http://mp.weixin.qq.com",
-                "appid": "wx1f5d6afca3c44aab",
-                "pagepath": "pages/index/index"
+                "url": "http://book.quanchonger.com"
             },
+            # {
+            #     "type": "miniprogram",
+            #     "name": "小汪影视",
+            #     "url": "http://mp.weixin.qq.com",
+            #     "appid": "wx1f5d6afca3c44aab",
+            #     "pagepath": "pages/index/index"
+            # },
             {
                 "type": "miniprogram",
                 "name": "智慧助手",
@@ -624,6 +624,13 @@ def test_test():
     import requests
     resp = requests.get('https://jsap.attakids.com/?url=https://v.qq.com/x/cover/mzc0020007q9shb.html')
     return jsonify(xx=resp.text)
+
+
+@app.route('/vip/save/suggest')
+def save_suggest():
+    if request.args['suggest']:
+        YTV.save_suggest( request.args['suggest'])
+    return jsonify(ok='ok')
 
 
 @app.route('/vip/banner')
