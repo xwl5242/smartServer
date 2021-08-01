@@ -294,8 +294,19 @@ class Top:
     def __init__(self):
         self.index_url = 'https://v.qq.com/biu/ranks/?t=hotsearch'
         self.name_xpath = '//*[@id="app"]/div/div/div[2]/div/div[1]/div[1]/div[2]/div/ol//li/a/span[2]/text()'
-
+        self.index_url_1 = 'https://top.baidu.com/board?tab=movie'
+        self.name_xpath_1 = '//div[@class="content_1YWBm"]/a/div/text()'
+    
     def spider(self):
+        try:
+            r = requests.get(self.index_url_1, headers={'User-Agent': random.choice(Conf.UAS)})
+            text = r.content.decode('utf-8')
+            root = etree.HTML(text)
+            return root.xpath(self.name_xpath_1)[:9]
+        except:
+            return self.spider1()
+    
+    def spider1(self):
         r = requests.get(self.index_url, headers={'User-Agent': random.choice(Conf.UAS)})
         text = r.content.decode('utf-8')
         root = etree.HTML(text)
@@ -303,4 +314,4 @@ class Top:
 
 
 if __name__ == '__main__':
-    print(LeDuoParse.parse('XMMTUzNzA2MDAwMF8x'))
+    print(Top().spider())
