@@ -82,12 +82,13 @@ class YTV:
         settings = YTV.get_settings(ver)
         if settings['status'] == '1':
             mv_list = []
-            top_list = Top().spider()
+            top_list = Top().spider1()
             # top_list = ['奔跑吧 第五季']
             for top in top_list:
+                top = str(top).strip()
                 tt, tt1 = YTV._get_top(top, ' ')
                 if tt == top:
-                    tt, tt1 = YTV._get_top(top, '·')
+                    tt, tt1 = YTV._get_top(tt, '·')
                 sql = f"select {YTV.SQL} from mac_vod " \
                       f"where vod_status='1' and type_id not in (11, 21) and " \
                     f"vod_name like '{tt}%' order by vod_time_add desc limit 0,9"
@@ -101,6 +102,8 @@ class YTV:
                     mv_list.extend(mvs)
             import random
             random.shuffle(mv_list)
+            if len(mv_list) > 9:
+                mv_list = mv_list[:len(mv_list) - len(mv_list) % 3]
             return mv_list
         else:
             sql = f"select {YTV.SQL} from mac_vod " \
@@ -314,4 +317,4 @@ class Top:
 
 
 if __name__ == '__main__':
-    print(Top().spider())
+    YTV.get_news('W4')
