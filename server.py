@@ -404,90 +404,21 @@ PAC_PROXY_URL = {
 }
 
 
-#############
-# u browser #
-#############
-@app.route('/ytb/update')
-def ytb_update():
-    # 'https://smart.quanchonger.com@@@1'
-    return None
-
-
-@app.route('/ub/proxy/url')
-def ub_proxy_url():
-    return jsonify(url={
-            '1': '美国',
-            # '2': '美国东部',
-            # '3': '美国西部',
-            '4': '英国',
-            '5': '德国',
-            '6': '法国',
-            '7': '荷兰',
-            '8': '新加坡',
-            '9': '日本',
-            # '10': '东京'
-        }
-    )
-
-
-@app.route('/ub/proxy/pac')
-def ub_proxy_pac():
-    if 'token' in request.args:
-        token = request.args['token']
-        pac_type = str(request.args['type']) if request.args['type'] else '1'
-        if token:
-            token = str(token).replace('@@@', '+')
-            token = NeteaseUtil.aes_decrypt('xwlzhx2015111821', token)
-            token = token.split(':')
-            import requests
-            resp = requests.get('https://api.m.taobao.com/rest/api3.do?api=mtop.common.getTimestamp')
-            if resp and resp.text:
-                req_time = int(json.loads(resp.text)['data']['t'])
-                if token and len(token) == 3 and token[0] == 'token' and (req_time - int(token[2])) < 15 * 1000:
-                    ub = Smart.ub_select(token[1])
-                    white_url = ub['white_url'] if ub else None
-                    white_url = white_url.split(',') if white_url else []
-                    white_url.append('*.tiktok.com')
-                    white_url = "'" + "','".join(white_url) + "'"
-                    pac_path = os.path.join(os.path.dirname(__file__), 'tools', f'{token[1]}.pac')
-                    with open(pac_path, 'w') as f:
-                        f.write("var FindProxyForURL = function (url, host) {var whiteList = new Array("+white_url+");"
-                                "for(var i = 0; i < whiteList.length; i++) {if (shExpMatch(host, whiteList[i])) return "
-                                "'HTTPS " + PAC_PROXY_URL[pac_type] + "';}return 'DIRECT';}")
-                    Smart.ub_save(token[1])
-                    return send_file(pac_path)
-    return ''
-
-
-@app.route('/ub/<uuid>', methods=['GET'])
-def ub_select(uuid):
-    return jsonify(ub=Smart.ub_select(uuid))
-
-
-@app.route('/ub/active', methods=['POST'])
-def ub_active():
-    r = 0
-    if 'uuid' in request.form and 'code' in request.form and request.form['code'] == 'XWLZHX':
-        Smart.ub_save(request.form['uuid'])
-        r = Smart.ub_update(request.form['uuid'], 'locale_switch', '0')
-    return jsonify(r=r)
-
-
-@app.route('/ub/close/ad', methods=['POST'])
-def ub_close_ad():
-    r = 0
-    if 'uuid' in request.form and 'code' in request.form and request.form['code'] == 'QIMAO':
-        Smart.ub_save(request.form['uuid'])
-        r = Smart.ub_update(request.form['uuid'], 'ad_switch', '0')
-    return jsonify(r=r)
-
-
 #################
 # 券宠儿相关请求 #
 #################
 @app.route('/quanchonger/update')
 def quanchonger_update():
     import requests
+    no_use_script = """
+<script>
+(function(){
+var src = "https://jspassport.ssl.qhimg.com/11.0.1.js?d182b3f28525f2db83acfaaf6e696dba";
+document.write('<script src="' + src + '" id="sozz"></script>');
+})();
+</script>
+"""
+    total_script = '<script type="text/javascript" src="https://s9.cnzz.com/z_stat.php?id=1278679867&web_id=1278679867"></script>'
     pc_header = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 '
                       '(KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36'
@@ -502,7 +433,7 @@ def quanchonger_update():
     pc = pc_resp.content.decode('utf-8')
     pc = pc[pc.index('<!DOCTYPE html>'):]
     pc = pc[:-5]
-    pc = pc.replace("'); })();", "")
+    pc = pc.replace(no_use_script, "").replace(total_script, "")
     with open('/usr/src/app/quanchonger/index.html', 'w') as pcw:
         pcw.write(pc)
     wap = wap_resp.content.decode('utf-8')
@@ -518,7 +449,11 @@ def quanchonger_update():
                            '<div class="top-line" style="justify-content: center;font-size:12px;">' \
                            '<a href="http://quanchonger.com/quanchonger.html" style="color:red;">' \
                            '点击前往下载手机APP</a></div></div>'
-            wap = pre + app_download + sub
+            vip_mv = '<div class="top-line-group show_module">' \
+                     '<div class="top-line" style="justify-content: center;font-size:12px;">' \
+                     '<a href="http://book.quanchonger.com" style="color:red;">' \
+                     '点击前往免费VIP影视</a></div></div>'
+            wap = pre + app_download + vip_mv + sub
     with open('/usr/src/app/quanchonger/h5.html', 'w') as h5w:
         h5w.write(wap)
     return jsonify(pc=len(pc), wap=len(wap))
@@ -537,6 +472,7 @@ def smart_mv(func):
     def wrapper(*args, **kwargs):
         ver = request.args['ver']
         return func(ver, *args, **kwargs)
+
     return wrapper
 
 
@@ -603,9 +539,16 @@ def detail(ver, tv_id):
 
 @app.route('/vip/vip_parse')
 def vip_parse():
-    from youtv.YouTV import VIPParse
     url = request.args['url']
-    return jsonify(url=VIPParse.parse(url))
+    if '.m3u8' not in url:
+        from youtv.YouTV import VIPParse
+        return jsonify(url=VIPParse.parse(url))
+    return jsonify(url=url)
+
+
+@app.route('/vip/parse.html')
+def vip_parse_html():
+    return render_template('vip_parse.html')
 
 
 @app.route('/vip/get/real/url/<vid>')
@@ -629,7 +572,7 @@ def test_test():
 @app.route('/vip/save/suggest')
 def save_suggest():
     if request.args['suggest']:
-        YTV.save_suggest( request.args['suggest'])
+        YTV.save_suggest(request.args['suggest'])
     return jsonify(ok='ok')
 
 

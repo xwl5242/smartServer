@@ -10,7 +10,6 @@ from urllib.parse import unquote
 
 
 class YTV:
-
     SQL = 'vod_id,type_id,vod_name,vod_pic,vod_actor,vod_director,vod_blurb,vod_remarks,' \
           'vod_area,vod_lang,vod_year,vod_score,vod_score_all,vod_score_num,vod_play_from,vod_time,vod_serial'
 
@@ -72,7 +71,7 @@ class YTV:
 
     @staticmethod
     @vip_db
-    def save_suggest(cursor,  suggest):
+    def save_suggest(cursor, suggest):
         sql = f"insert into mac_suggest(suggest) values ('{suggest}')"
         cursor.execute(sql)
 
@@ -88,22 +87,24 @@ class YTV:
                 top = str(top).strip()
                 tt, tt1 = YTV._get_top(top, ' ')
                 if tt == top:
-                    tt, tt1 = YTV._get_top(tt, '·')
+                    tt, tt1 = YTV._get_top(top, '·')
                 sql = f"select {YTV.SQL} from mac_vod " \
-                      f"where vod_status='1' and type_id not in (11, 21) and " \
+                    f"where vod_status='1' and type_id not in (11, 21) and " \
                     f"vod_name like '{tt}%' order by vod_time_add desc limit 0,9"
                 cursor.execute(YTV.get_real_sql(cursor, ver, sql))
                 mvs = cursor.fetchall()
-                if mvs and len(mvs) > 1:
-                    for mv in mvs:
-                        if str(mv['vod_name']).find(tt1) > 0 or str(mv['vod_name']).find(YTV._num_replace(tt1)) > 0:
-                            mv_list.append(mv)
-                else:
-                    mv_list.extend(mvs)
+                # if mvs and len(mvs) > 1:
+                #     for mv in mvs:
+                #         if str(mv['vod_name']).find(tt1) > 0 :
+                #             mv_list.append(mv)
+                # else:
+                mv_list.extend(mvs)
             import random
             random.shuffle(mv_list)
             if len(mv_list) > 9:
                 mv_list = mv_list[:len(mv_list) - len(mv_list) % 3]
+            if len(mv_list) >= 12:
+                mv_list = mv_list[:12]
             return mv_list
         else:
             sql = f"select {YTV.SQL} from mac_vod " \
@@ -124,7 +125,10 @@ class YTV:
         string_arr = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十']
         for num in num_arr:
             if str(string).find(str(num)) >= 0:
-                return string.replace(str(num), string_arr[num_arr.index(num)])
+                string = string.replace(str(num), "")
+        for num in string_arr:
+            if str(string).find(str(num)) >= 0:
+                string = string.replace(str(num), "")
         return string
 
     @staticmethod
@@ -247,13 +251,17 @@ class LeDuoParse:
                 if mv_url:
                     if 'type=urlencode' in mv_url or 'url=' in mv_url:
                         t_index = mv_url.find('url=')
-                        mv_url = mv_url[t_index+4:]
+                        mv_url = mv_url[t_index + 4:]
                         if 'type=urlencode' in mv_url:
                             mv_url = mv_url.replace('type=urlencode', '').replace('&', '')
                         mv_url = unquote(mv_url)
-                    return mv_url.replace(' ', '').replace("'", '')\
-                        .replace(';', '').replace('\r', '').replace('\n', '')\
-                        .replace('\t', '').replace('&next=varnext=', '')
+                    mv_url.replace(' ', '').replace("'", '') \
+                        .replace(';', '').replace('\r', '').replace('\n', '') \
+                        .replace('\t', '')
+                    if '&next=' in mv_url:
+                        next_index = mv_url.find('&next=')
+                        mv_url = mv_url[0: next_index]
+                    return mv_url
         return None
 
 
@@ -299,7 +307,7 @@ class Top:
         self.name_xpath = '//*[@id="app"]/div/div/div[2]/div/div[1]/div[1]/div[2]/div/ol//li/a/span[2]/text()'
         self.index_url_1 = 'https://top.baidu.com/board?tab=movie'
         self.name_xpath_1 = '//div[@class="content_1YWBm"]/a/div/text()'
-    
+
     def spider(self):
         try:
             r = requests.get(self.index_url_1, headers={'User-Agent': random.choice(Conf.UAS)})
@@ -308,7 +316,7 @@ class Top:
             return root.xpath(self.name_xpath_1)[:9]
         except:
             return self.spider1()
-    
+
     def spider1(self):
         r = requests.get(self.index_url, headers={'User-Agent': random.choice(Conf.UAS)})
         text = r.content.decode('utf-8')
@@ -317,4 +325,4 @@ class Top:
 
 
 if __name__ == '__main__':
-    YTV.get_news('W4')
+    print(LeDuoParse.parse('XMMTUzNzA2MDAwMF8x'))
