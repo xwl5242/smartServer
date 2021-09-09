@@ -9,7 +9,7 @@ from tools.Music import Music
 from tools.Smart import Smart
 from tools.GirlMV import GirlMV
 from tools.Gallery import Gallery
-from util.NeteaseUtil import NeteaseUtil
+from youtv.TVSpider import TVSpider
 from wechat.WxService import WxService, WxMenuService
 from flask import Flask, request, render_template, jsonify, send_file
 
@@ -573,6 +573,12 @@ def test_test():
 def save_suggest():
     if request.args['suggest']:
         YTV.save_suggest(request.args['suggest'])
+    return jsonify(ok='ok')
+
+
+@app.route('/vip/tv/spider')
+def tv_spider():
+    TVSpider().fetch(1, 10)
     return jsonify(ok='ok')
 
 
