@@ -2,10 +2,7 @@ flask
 requests
 gunicorn
 gevent
-qiniu
-wechatpy
 pycryptodome
 DBUtils
 lxml
 pymysql
-tencentcloud-sdk-python
