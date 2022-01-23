@@ -13,7 +13,6 @@ class Conf:
     DB_USER = _config.get(f'db_{DB_PT}', 'user')
     DB_PASSWORD = _config.get(f'db_{DB_PT}', 'password')
     DB_DATABASE = _config.get(f'db_{DB_PT}', 'database')
-    DB_VIP_DATABASE = _config.get(f'db_{DB_PT}', 'vip_database')
     # wx公众平台相关
     WX_APP_ID = _config.get('wechat', 'app_id')
     WX_APP_SECRET = _config.get('wechat', 'app_secret')
@@ -25,14 +24,6 @@ class Conf:
     BOT_API_KEY = _config.get('bd_bot', 'api_key')
     BOT_API_SECRET = _config.get('bd_bot', 'api_secret')
     BOT_SERVICE_ID = _config.get('bd_bot', 'service_id')
-    # 腾讯AI相关
-    TENCENT_AI_SECRET_ID = _config.get('tencent', 'secret_id')
-    TENCENT_AI_SECRET_KEY = _config.get('tencent', 'secret_key')
-    # 大淘客相关
-    DTK_APP_KEY = _config.get('dtk', 'app_key')
-    DTK_APP_SECRET = _config.get('dtk', 'app_secret')
-    # 微信消息回复地址
-    WX_REPLY_TPL_URL = _config.get(f'wx_msg_{DB_PT}', 'reply_tpl_url')
 
     UAS = [
         "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0;",
