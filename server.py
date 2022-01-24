@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 import json
 from flask import Flask, jsonify
-from tools.IPTV import HqTV, IpTV, HdTV, CCTV, WS_TV, GAT_TV
+from tools.IPTV import HqTV, IpTV, HdTV, CCTV, WS_TV, GAT_TV, Service
 
 
 def substr(string, start, end):
@@ -25,27 +25,32 @@ app.add_template_filter(substr, "substr")
 
 @app.route('/xwlzhx20151118/video/sync')
 def video_sync():
-    HqTV.fetch()
-    # IpTV.fetch()
-    # HdTV.fetch()
+    HqTV().fetch()
+    IpTV.fetch()
+    HdTV.fetch()
     return jsonify({"result": "ok"})
 
 
-@app.route('/video/channel')
+@app.route('/iptv/config/<ver>')
+def iptv_config(ver):
+    return jsonify({"setting": Service.get_iptv_config(ver)})
+
+
+@app.route('/iptv/video/channel')
 def video_channel():
     return jsonify({'cctv': CCTV, 'ws_tv': WS_TV, 'gat_tv': GAT_TV})
 
 
-@app.route('/video/by/name/<tv_name>')
+@app.route('/iptv/video/by/name/<tv_name>')
 def video_by_name(tv_name):
-    return jsonify({'data': IpTV.get_video_by_name(tv_name)})
+    return jsonify({'data': Service.get_video_by_tv_name(tv_name)})
 
 
-@app.route('/video/player/<video_id>/<channel>')
+@app.route('/iptv/video/player/<video_id>/<channel>')
 def video_player(video_id, channel):
     video_id = str(video_id)
     channel = channel if channel else 1
-    video_url = HqTV.get_video_url(video_id) if int(channel) == 1 else \
+    video_url = HqTV().get_video_url(video_id) if int(channel) == 1 else \
         (IpTV.get_video_url(video_id) if int(channel) == 2 else HdTV.get_video_url(video_id))
     return jsonify({"url": video_url})
 

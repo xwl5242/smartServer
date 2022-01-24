@@ -19,56 +19,52 @@ GAT_TV = ['翡翠台HD', '明珠台HD', '香港开电视', '凤凰中文', '凤�
 
 
 class HqTV:
-    _cctv_url = [('CCTV1', 'cctv1.html'), ('CCTV2', '347.html'), ('CCTV3', 'cctv3.html'),
-                 ('CCTV4', 'cctv4.html'), ('CCTV5', 'cctv5.html'), ('CCTV5+', 'cctv5+.html'),
-                 ('CCTV6', 'cctv6.html'), ('CCTV7', 'cctv7.html'), ('CCTV8', '353.html'),
-                 ('CCTV9', 'cctv9.html'), ('CCTV10', 'cctv10.html'), ('CCTV11', 'cctv11.html'),
-                 ('CCTV12', 'cctv12.html'), ('CCTV13', 'cctv13.html'), ('CCTV14', 'cctv14.html'),
-                 ('CCTV15', 'cctv15.html'), ('CCTV17', 'cctv17.html')]
-    _ws_url = [('湖南卫视', 'hunanweishi.html'), ('浙江卫视', 'zhejiangweishi.html'),
-               ('东方卫视', 'dongfangweishi.html'), ('江苏卫视', 'jiangsuweishi.html'),
-               ('安徽卫视', 'anhui.html'), ('重庆卫视', 'chongqing-weishi.html'),
-               ('北京卫视', 'beijingweishi.html'), ('天津卫视', 'tianjinweishi.html'),
-               ('辽宁卫视', 'liaoningweishi.html'), ('江西卫视', 'jiangxiweishi.html'),
-               ('黑龙江卫视', 'heilongjiang.html'), ('山东卫视', 'shandongweishi.html'),
-               ('云南卫视', 'yunnan.html'), ('四川卫视', 'sichuan.html'), ('四川康巴卫视', 'sctvkbtv.html'),
-               ('河南卫视', 'henan.html'), ('广东卫视', 'guangdong.html'),
-               ('深圳卫视', 'szws.html'), ('湖北卫视', 'hubei.html'), ('东南卫视', 'fujian.html'),
-               ('厦门卫视', 'xiamen.html'), ('海峡卫视', 'fjtv10.html'), ('河北卫视', 'hebei.html'),
-               ('吉林卫视', 'jilin.html'), ('广西卫视', 'guangxi.html'), ('山西卫视', 'shanxi.html'),
-               ('陕西卫视', 'shanxiweishi.html'), ('内蒙古卫视', 'neimenggu.html'), ('宁夏卫视', 'ningxia.html'),
-               ('西藏卫视', 'xizang.html'), ('新疆卫视', 'xinjiang.html'), ('甘肃卫视', 'gansu.html'),
-               ('海南卫视', 'lvyou.html'), ('贵州卫视', 'guizhouweishi.html'), ('青海卫视', 'qinghai-weishi.html'),
-               ('兵团卫视', 'bingtuan.html'), ('三沙卫视', 'sansha.html'), ('西藏藏语卫视', 'zangyu.html')]
-    _gat_url = [('凤凰卫视中文台', 'fhzw.html'), ('香港凤凰卫视资讯台', 'fhzx.html'), ('凤凰卫视香港台', 'fhxg.html'),
-                ('香港卫视', 'xgws.html'), ('阳光卫视', 'ygws.html'), ('香港卫视精品台', 'xgwsjp.html'),
-                ('香港TVB8', 'tvb-8.html'), ('星空卫视', 'xkws.html'), ('澳视高清', 'aosgq.html'),
-                ('澳视澳门台', 'aosam.html'), ('莲花卫视', 'lhws.html'), ('澳门卫视', 'aomen.html'),
-                ('台湾台视', 'taishi.html'), ('台湾中视', 'ctv.html'), ('台湾华视', 'cts.html'), ('tvb翡翠卫星台', 'tvbj.html')]
+    def __init__(self):
+        self._cctv_url = [('CCTV1', 'cctv1.html'), ('CCTV2', '347.html'), ('CCTV3', 'cctv3.html'),
+                     ('CCTV4', 'cctv4.html'), ('CCTV5', 'cctv5.html'), ('CCTV5+', 'cctv5+.html'),
+                     ('CCTV6', 'cctv6.html'), ('CCTV7', 'cctv7.html'), ('CCTV8', '353.html'),
+                     ('CCTV9', 'cctv9.html'), ('CCTV10', 'cctv10.html'), ('CCTV11', 'cctv11.html'),
+                     ('CCTV12', 'cctv12.html'), ('CCTV13', 'cctv13.html'), ('CCTV14', 'cctv14.html'),
+                     ('CCTV15', 'cctv15.html'), ('CCTV17', 'cctv17.html')]
+        self._ws_url = [('湖南卫视', 'hunanweishi.html'), ('浙江卫视', 'zhejiangweishi.html'),
+                   ('东方卫视', 'dongfangweishi.html'), ('江苏卫视', 'jiangsuweishi.html'),
+                   ('安徽卫视', 'anhui.html'), ('重庆卫视', 'chongqing-weishi.html'),
+                   ('北京卫视', 'beijingweishi.html'), ('天津卫视', 'tianjinweishi.html'),
+                   ('辽宁卫视', 'liaoningweishi.html'), ('江西卫视', 'jiangxiweishi.html'),
+                   ('黑龙江卫视', 'heilongjiang.html'), ('山东卫视', 'shandongweishi.html'),
+                   ('云南卫视', 'yunnan.html'), ('四川卫视', 'sichuan.html'), ('四川康巴卫视', 'sctvkbtv.html'),
+                   ('河南卫视', 'henan.html'), ('广东卫视', 'guangdong.html'),
+                   ('深圳卫视', 'szws.html'), ('湖北卫视', 'hubei.html'), ('东南卫视', 'fujian.html'),
+                   ('厦门卫视', 'xiamen.html'), ('海峡卫视', 'fjtv10.html'), ('河北卫视', 'hebei.html'),
+                   ('吉林卫视', 'jilin.html'), ('广西卫视', 'guangxi.html'), ('山西卫视', 'shanxi.html'),
+                   ('陕西卫视', 'shanxiweishi.html'), ('内蒙古卫视', 'neimenggu.html'), ('宁夏卫视', 'ningxia.html'),
+                   ('西藏卫视', 'xizang.html'), ('新疆卫视', 'xinjiang.html'), ('甘肃卫视', 'gansu.html'),
+                   ('海南卫视', 'lvyou.html'), ('贵州卫视', 'guizhouweishi.html'), ('青海卫视', 'qinghai-weishi.html'),
+                   ('兵团卫视', 'bingtuan.html'), ('三沙卫视', 'sansha.html'), ('西藏藏语卫视', 'zangyu.html')]
+        self._gat_url = [('凤凰卫视中文台', 'fhzw.html'), ('香港凤凰卫视资讯台', 'fhzx.html'), ('凤凰卫视香港台', 'fhxg.html'),
+                    ('香港卫视', 'xgws.html'), ('阳光卫视', 'ygws.html'), ('香港卫视精品台', 'xgwsjp.html'),
+                    ('香港TVB8', 'tvb-8.html'), ('星空卫视', 'xkws.html'), ('澳视高清', 'aosgq.html'),
+                    ('澳视澳门台', 'aosam.html'), ('莲花卫视', 'lhws.html'), ('澳门卫视', 'aomen.html'),
+                    ('台湾台视', 'taishi.html'), ('台湾中视', 'ctv.html'), ('台湾华视', 'cts.html'), ('tvb翡翠卫星台', 'tvbj.html')]
+        self._exist_exception = Service.get_video_exception()
+        self._video_info = Service.get_video_info()
 
-    @staticmethod
-    @db
-    def fetch(cursor):
-        HqTV._fetch_video_id(cursor, HqTV._ws_url, 2)
-        HqTV._fetch_video_id(cursor, HqTV._cctv_url, 1)
-        HqTV._fetch_video_id(cursor, HqTV._gat_url, 4)
+    def fetch(self):
+        self._fetch_video_id(self._ws_url, 2)
+        self._fetch_video_id(self._cctv_url, 1)
+        self._fetch_video_id(self._gat_url, 4)
 
-    @staticmethod
-    def get_video_url(video_id):
-        url = HqTV._get_video_url(video_id)
+    def get_video_url(self, video_id):
+        url = self._get_video_url(video_id)
         if not url:
-            return HqTV.get_video_url(video_id)
+            return self.get_video_url(video_id)
         return url
 
-    @staticmethod
-    @db
-    def _get_video_url(cursor, video_id):
+    def _get_video_url(self, video_id):
         try:
-            cursor.execute(f"select * from iptv_video where id={video_id}")
-            video = cursor.fetchone()
+            video = Service.get_video_by_id(video_id)
             if video:
                 tv_ids = str(video['tv_video']).split(",")
-                # TODO:// 还差一层 video source
                 extend_url = 'http://tv.haoqu99.com/e/extend/tv.php?id='
                 script_xpath = '//script[contains(text(),"var signal")]/text()'
                 resp = requests.get(extend_url + tv_ids[0], headers=Utils.ua())
@@ -85,17 +81,22 @@ class HqTV:
                                 if '.m3u8' in video_url:
                                     return video_url[video_url.index('http', 5):]
                                 else:
-                                    new_video = ','.join(tv_ids[1:])
-                                    cursor.execute(f"update iptv_video set tv_video='{new_video}' where id='{video_id}'")
-                                    exception_id = dict(HqTV.get_exception_id())
-                                    exception_id = exception_id.get(video['tv_name'], "")
+                                    if 'yangzhouflvpc.php' not in video_url:
+                                        resp = requests.get(video_url, headers=Utils.ua())
+                                        if resp and resp.content:
+                                            root = HTML(str(resp.content, encoding='utf8'))
+                                            player = root.xpath("//source/@src")
+                                            if player and len(player) > 0 and '.m3u8' in player[0]:
+                                                return player[0]
+                                    Service.update_video_url(video_id, ','.join(tv_ids[1:]))
+                                    exception_id = self._exist_exception.get(video['tv_name'], "")
                                     if exception_id:
                                         exists = list(exception_id.split(","))
                                         exists.append(tv_ids[0])
                                         update_id = ','.join(exists)
-                                        cursor.execute(f"update iptv_exception_id set exception_id='{update_id}' where tv_name='{video['tv_name']}'")
+                                        Service.update_video_exception(video['tv_name'], update_id)
                                     else:
-                                        cursor.execute(f"insert into iptv_exception_id values ('{video['tv_name']}', '{tv_ids[0]}')")
+                                        Service.insert_video_exception(video['tv_name'], tv_ids[0])
                             else:
                                 return video_url
             return None
@@ -105,26 +106,15 @@ class HqTV:
             print(repr(e))
             return None
 
-    @staticmethod
-    @db
-    def get_exception_id(cursor):
-        result = {}
-        cursor.execute(f"select * from iptv_exception_id")
-        exception = cursor.fetchall()
-        for e in exception:
-            result[e['tv_name']] = e['exception_id']
-        return result
-
-    @staticmethod
-    def _fetch_video_id(cursor, index_url, index):
-        sql = []
-        exception_id = dict(HqTV.get_exception_id())
+    def _fetch_video_id(self, index_url, index):
+        insert_sql, update_sql = [], []
+        video_info = self._video_info
+        exception = self._exist_exception
         update_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
         base_url = f'http://tv.haoqu99.com/{index}/'
         li_xpath = '//li/span[contains(text(),"#FLAG#")]/parent::li/@data-player'
         for url in index_url:
-            if exception_id:
-                exception_id = exception_id.get(url[0], "")
+            exception_id = exception.get(url[0], "")
             resp = requests.get(base_url + url[1], headers=Utils.ua())
             if resp and resp.content:
                 root = HTML(str(resp.content, encoding='gbk'))
@@ -136,8 +126,16 @@ class HqTV:
                 if len(video_id) > 0:
                     video_id = [vi for vi in video_id if vi not in exception_id]
                     video_id = ",".join(video_id)
-                    sql.append(f"('1','{url[0]}','{video_id}','{update_time}')")
-        cursor.execute('insert into iptv_video(channel,tv_name,tv_video,update_time) values ' + ",".join(sql))
+                    db_id = str(video_info.get(url[0]+'-1', ''))
+                    if db_id:
+                        update_sql.append(f"update iptv_video set tv_video='{video_id}',"
+                                          f"update_time='{update_time}' where id={int(db_id)}")
+                    else:
+                        insert_sql.append(f"('1','{url[0]}','{video_id}','{update_time}')")
+        if len(insert_sql) > 0:
+            Service.insert_videos(insert_sql)
+        if len(update_sql) > 0:
+            Service.update_videos(update_sql)
 
         # @staticmethod
         # def _fetch():
@@ -158,20 +156,9 @@ class HqTV:
 class IpTV:
 
     @staticmethod
-    @db
-    def get_video_by_name(cursor, tv_name):
-        cursor.execute(f"select id,channel,tv_video from iptv_video where tv_name='{tv_name}'")
-        video_list = cursor.fetchall()
-        for v in video_list:
-            v['tv_video'] = '' if v['channel'] != '1' else v['tv_video']
-        return video_list
-
-    @staticmethod
-    @db
-    def get_video_url(cursor, video_id):
+    def get_video_url(video_id):
         try:
-            cursor.execute(f"select * from iptv_video where id={video_id}")
-            video = cursor.fetchone()
+            video = Service.get_video_by_id(video_id)
             if video:
                 return video['tv_video']
             return None
@@ -182,9 +169,9 @@ class IpTV:
             return None
 
     @staticmethod
-    @db
-    def fetch(cursor):
-        video_url, sql = [], []
+    def fetch():
+        video_info = Service.get_video_info()
+        video_url, insert_sql, update_sql = [], [], []
         update_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
         exclude = ['TVBJ2', '无线新闻台', '无线财经台', 'VIUHD', 'viu6', 'RTHK31', 'RTHK32', 'now新闻', '美亚粤语',
                    '美亚普通话', '天映经典粤语', '天映经典普通话', 'animax第一声道', 'animax原声', 'Hands Up Channel',
@@ -197,8 +184,16 @@ class IpTV:
             video_url.extend(IpTV._parse(resp))
         video_url = [u for u in video_url if u[0] not in exclude]
         for v in video_url:
-            sql.append(f"('2','{v[0]}','{v[1]}','{update_time}')")
-        cursor.execute('insert into iptv_video(channel,tv_name,tv_video,update_time) values ' + ",".join(sql))
+            db_id = str(video_info.get(v[0]+'-2', ''))
+            if db_id:
+                update_sql.append(f"update iptv_video set tv_video='{v[1]}',"
+                                  f"update_time='{update_time}' where id={int(db_id)}")
+            else:
+                insert_sql.append(f"('2','{v[0]}','{v[1]}','{update_time}')")
+        if len(insert_sql) > 0:
+            Service.insert_videos(insert_sql)
+        if len(update_sql) > 0:
+            Service.update_videos(update_sql)
 
     @staticmethod
     def _parse(resp):
@@ -215,11 +210,9 @@ class IpTV:
 
 class HdTV:
     @staticmethod
-    @db
-    def get_video_url(cursor, video_id):
+    def get_video_url(video_id):
         try:
-            cursor.execute(f"select * from iptv_video where id={video_id}")
-            video = cursor.fetchone()
+            video = Service.get_video_by_id(video_id)
             if video:
                 url = "http://hd181.com/"
                 resp = requests.get(url + video['tv_video'], headers=Utils.ua())
@@ -236,9 +229,9 @@ class HdTV:
             return None
 
     @staticmethod
-    @db
-    def fetch(cursor):
-        result, sql = [], []
+    def fetch():
+        video_info = Service.get_video_info()
+        result, insert_sql, update_sql = [], [], []
         url = "http://hd181.com/"
         update_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
         href_xpath = '//div[@class="item item-#INDEX#"]/ul/li/a/@href'
@@ -254,7 +247,83 @@ class HdTV:
         for v in result:
             if v[0] not in ['cctv4亚洲', 'cctv4美洲', 'cctv4欧洲']:
                 video_name = v[0].replace('cctv', 'CCTV').replace('台湾三立', '台湾卫视')
-                sql.append(f"('3','{video_name}','{v[1]}','{update_time}')")
-        cursor.execute('insert into iptv_video(channel,tv_name,tv_video,update_time) values ' + ",".join(sql))
+                db_id = str(video_info.get(video_name + '-3', ''))
+                if db_id:
+                    update_sql.append(f"update iptv_video set tv_video='{v[1]}',"
+                                      f"update_time='{update_time}' where id={int(db_id)}")
+                else:
+                    insert_sql.append(f"('3','{video_name}','{v[1]}','{update_time}')")
+        if len(insert_sql) > 0:
+            Service.insert_videos(insert_sql)
+        if len(update_sql) > 0:
+            Service.update_videos(update_sql)
 
+
+class Service:
+    @staticmethod
+    @db
+    def get_iptv_config(cursor, ver):
+        cursor.execute(f"select * from iptv_config where ver='{ver}'")
+        return cursor.fetchone()
+
+    @staticmethod
+    @db
+    def get_video_by_id(cursor, video_id):
+        cursor.execute(f"select * from iptv_video where id={video_id}")
+        return cursor.fetchone()
+
+    @staticmethod
+    @db
+    def get_video_by_tv_name(cursor, video_name):
+        cursor.execute(f"select id,channel,tv_video from iptv_video where tv_name='{video_name}'")
+        video_list = cursor.fetchall()
+        for v in video_list:
+            v['tv_video'] = '' if v['channel'] != '1' else v['tv_video']
+        return video_list
+
+    @staticmethod
+    @db
+    def insert_videos(cursor, values_sql):
+        cursor.execute('insert into iptv_video(channel,tv_name,tv_video,update_time) values ' + ",".join(values_sql))
+
+    @staticmethod
+    @db
+    def update_videos(cursor, update_sql_list):
+        for sql in update_sql_list:
+            cursor.execute(sql)
+
+    @staticmethod
+    @db
+    def update_video_url(cursor, video_id, tv_video):
+        cursor.execute(f"update iptv_video set tv_video='{tv_video}' where id='{video_id}'")
+
+    @staticmethod
+    @db
+    def get_video_info(cursor):
+        result = dict()
+        cursor.execute("select * from iptv_video")
+        infos = cursor.fetchall()
+        for info in infos:
+            result[info['tv_name']+'-'+info['channel']] = info['id']
+        return result
+
+    @staticmethod
+    @db
+    def get_video_exception(cursor):
+        result = dict()
+        cursor.execute(f"select * from iptv_exception_id")
+        exception = cursor.fetchall()
+        for e in exception:
+            result[e['tv_name']] = e['exception_id']
+        return result
+
+    @staticmethod
+    @db
+    def insert_video_exception(cursor, tv_name, exception_id):
+        cursor.execute(f"insert into iptv_exception_id values ('{tv_name}', '{exception_id}')")
+
+    @staticmethod
+    @db
+    def update_video_exception(cursor, tv_name, exception_id):
+        cursor.execute(f"update iptv_exception_id set exception_id='{exception_id}' where tv_name='{tv_name}'")
 

@@ -37,15 +37,3 @@ class Conf:
         "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; 360SE)"
     ]
 
-    @classmethod
-    def mv_sub_type(cls):
-        sub_type_dict = {}
-        sub_type_str = str(cls._config.get('mv', 'mv_sub_type'))
-        if sub_type_str:
-            temps = sub_type_str.split('#')
-            for temp in temps:
-                tt = temp.split(':')
-                types = tt[1].split(',')
-                sub_type_dict[tt[0]] = types
-        return sub_type_dict
-
