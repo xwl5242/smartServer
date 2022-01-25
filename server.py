@@ -59,18 +59,6 @@ def video_player(video_id, channel):
     return jsonify({"url": video_url})
 
 
-@app.route('/iptv/m3u8')
-def video_m3u8():
-    url = request.args['m3u8']
-    if url:
-        url = unquote(base64.b64decode(url).decode("utf-8"))
-        resp = requests.get(url, headers=Utils.ua())
-        if resp and resp.content:
-            resp = Response(resp.content, content_type='application/x-mpegURL')
-            return resp
-    return None
-
-
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=8082, debug=True)
 
