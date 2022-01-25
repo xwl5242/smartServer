@@ -1,6 +1,10 @@
 # -*- coding:utf-8 -*-
 import json
-from flask import Flask, jsonify
+import base64
+import requests
+from tools.Utils import Utils
+from urllib.parse import unquote
+from flask import Flask, jsonify, request, Response
 from tools.IPTV import HqTV, IpTV, HdTV, CCTV, WS_TV, GAT_TV, Service
 
 
@@ -53,6 +57,18 @@ def video_player(video_id, channel):
     video_url = HqTV().get_video_url(video_id) if int(channel) == 1 else \
         (IpTV.get_video_url(video_id) if int(channel) == 2 else HdTV.get_video_url(video_id))
     return jsonify({"url": video_url})
+
+
+@app.route('/iptv/m3u8')
+def video_m3u8():
+    url = request.args['m3u8']
+    if url:
+        url = unquote(base64.b64decode(url).decode("utf-8"))
+        resp = requests.get(url, headers=Utils.ua())
+        if resp and resp.content:
+            resp = Response(resp.content, content_type='application/x-mpegURL')
+            return resp
+    return None
 
 
 if __name__ == '__main__':
