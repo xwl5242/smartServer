@@ -1,16 +1,42 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset=utf-8 />
+    <meta charset=utf-8 />
     <title>汪仔点播</title>
     <link href="{{ url_for('static',filename='css/video-js.css') }}" rel="stylesheet">
     <script src="{{ url_for('static',filename='js/video.js') }}"></script>
     <script src="{{ url_for('static',filename='js/videojs-hls.js') }}"></script>
+    <style>
+        body {
+            margin: 0 auto;
+        }
+        .wz-video {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .wz-video::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: url("{{ url_for('static',filename='back.jpeg') }}") no-repeat;
+            background-size: cover;
+            z-index: -1;
+            opacity: .8;
+        }
+    </style>
 </head>
 <body>
-    <video id="my_video_1" class="video-js vjs-default-skin" controls
-         preload="auto" width="640" height="268" crossorigin="Anonymous">
-        <source src="{{ player }}" type="application/x-mpegURL">
-    </video>
+<div class="wz-video">
+  <video class="video-js vjs-default-skin" controls preload="auto"
+         width="800" height="385" data-setup='{}' crossorigin="Anonymous">
+    <source src="{{ player }}" type="application/x-mpegURL">
+  </video>
+</div>
 </body>
 </html>
