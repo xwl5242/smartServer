@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8 />
+    <title>汪仔点播</title>
+    <link href="{{ url_for('static',filename='css/video-js.css') }}" rel="stylesheet">
+    <script src="{{ url_for('static',filename='js/video.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/videojs-hls.js') }}"></script>
+</head>
+<body>
+    <video id="my_video_1" class="video-js vjs-default-skin" controls
+         preload="auto" width="640" height="268" crossorigin="Anonymous">
+        <source src="{{ player }}" type="application/x-mpegURL">
+    </video>
+</body>
+</html>
