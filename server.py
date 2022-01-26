@@ -65,7 +65,7 @@ def video_player(video_id, channel):
     channel = channel if channel else 1
     video_url = HqTV().get_video_url(video_id) if int(channel) == 1 else \
         (IpTV.get_video_url(video_id) if int(channel) == 2 else HdTV.get_video_url(video_id))
-    return jsonify({"url": base64.b64encode(Utils.aes_encrypt(aes_key, aes_iv, video_url).encode()).decode('utf-8')})
+    return jsonify({"url": base64.b64encode(Utils.aes_encrypt(aes_key, aes_iv, video_url).encode()).decode('utf-8'), "u": video_url})
 
 
 @app.route('/iptv/player/<channel>')
