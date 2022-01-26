@@ -117,6 +117,27 @@ def ts_download(url_list):
                 f.write(resp.content)
 
 
+@app.route("/poetry")
+def poetry():
+    import json
+    try:
+        resp = requests.get('https://v2.jinrishici.com/token')
+        if resp and resp.text:
+            resp = json.loads(resp.text)
+            if resp and resp['status'] and resp['status'] == 'success':
+                token = resp['data']
+                resp = requests.get('https://v2.jinrishici.com/sentence', headers={'X-User-Token': token})
+                if resp and resp.text:
+                    resp = json.loads(resp.text)
+                    if resp and resp['status'] and resp['status'] == 'success':
+                        resp = resp['data']
+                        return jsonify({'content': resp['content'], 'title': resp['origin']['title'],
+                                        'dynasty': resp['origin']['dynasty'], 'author': resp['origin']['author']})
+    except:
+        return jsonify({'content': '云想衣裳花想容， 春风拂槛露华浓。',
+                        'title': '清平调', 'dynasty': '唐代', 'author': '李白'})
+
+
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=8082, debug=True)
 
