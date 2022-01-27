@@ -45,7 +45,7 @@ class IpTV:
                 urls.append(xj[tv])
             if xh.get(tv, ""):
                 urls.extend(xh[tv].split('$'))
-            urls = urls[0: 11] if len(urls) > 10 else urls
+            urls = urls[0: 8] if len(urls) > 8 else urls
             insert_sql_values = []
             for index, url in enumerate(urls):
                 insert_sql_values.append(f"('{channel_info[tv]}','{tv}','{url}',{index+1},'{update_time}')")
