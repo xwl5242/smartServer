@@ -5,8 +5,8 @@ import base64
 import requests
 from tools.Utils import Utils
 from config.Config import Conf
+from tools.IPTV import IpTV, Service
 from urllib.parse import unquote, quote
-from tools.IPTV import HqTV, IpTV, HdTV, CCTV, WS_TV, GAT_TV, Service
 from flask import Flask, jsonify, request, Response, render_template
 
 
@@ -38,9 +38,7 @@ app.add_template_filter(substr, "substr")
 
 @app.route('/xwlzhx20151118/video/sync')
 def video_sync():
-    HqTV().fetch()
     IpTV.fetch()
-    HdTV.fetch()
     return jsonify({"result": "ok"})
 
 
@@ -51,21 +49,13 @@ def iptv_config(ver):
 
 @app.route('/iptv/video/channel')
 def video_channel():
-    return jsonify({'cctv': CCTV, 'ws_tv': WS_TV, 'gat_tv': GAT_TV})
+    return jsonify({'channel': IpTV.get_tv_channel(), 'info': IpTV.get_tv_channel_id()})
 
 
-@app.route('/iptv/video/by/name/<tv_name>')
-def video_by_name(tv_name):
-    return jsonify({'data': Service.get_video_by_tv_name(tv_name)})
-
-
-@app.route('/iptv/video/player/<video_id>/<channel>')
-def video_player(video_id, channel):
+@app.route('/iptv/video/urls/<video_id>')
+def video_player(video_id):
     video_id = str(video_id)
-    channel = channel if channel else 1
-    video_url = HqTV().get_video_url(video_id) if int(channel) == 1 else \
-        (IpTV.get_video_url(video_id) if int(channel) == 2 else HdTV.get_video_url(video_id))
-    return jsonify({"url": base64.b64encode(Utils.aes_encrypt(aes_key, aes_iv, video_url).encode()).decode('utf-8'), "u": video_url})
+    return jsonify({'urls': IpTV.get_video_url(video_id)})
 
 
 @app.route('/iptv/player/<channel>')
@@ -106,15 +96,6 @@ def video_hls_ts():
         if resp and resp.content:
             resp = Response(resp.content, content_type='application/x-mpegURL')
             return resp
-
-
-def ts_download(url_list):
-    for url in url_list:
-        b64_url = base64.b64encode(url).decode("utf-8")
-        resp = requests.get(url, headers=Utils.ua())
-        if resp and resp.content:
-            with open(os.path.join(M3U8, b64_url), 'wb') as f:
-                f.write(resp.content)
 
 
 @app.route("/poetry")

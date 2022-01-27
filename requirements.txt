@@ -6,3 +6,4 @@ pycryptodome
 DBUtils
 lxml
 pymysql
+fake_useragent
