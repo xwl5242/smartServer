@@ -37,9 +37,10 @@ class IpTV:
     def fetch():
         xj = IpTV._fetch_xj()
         xh = IpTV._fetch_xh()
-        channel_info, urls = IpTV.get_tv_channel_id(), []
+        channel_info = IpTV.get_tv_channel_id()
         update_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
         for tv in channel_info.keys():
+            urls = []
             if xj.get(tv, ""):
                 urls.append(xj[tv])
             if xh.get(tv, ""):
